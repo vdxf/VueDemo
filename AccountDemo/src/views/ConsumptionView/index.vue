@@ -8,7 +8,7 @@
       </li>
       <li>
         <van-cell is-link @click="handleTimePopup">时间: <span>{{timeValue}}</span></van-cell>
-        <van-popup v-model="time">
+        <van-popup v-model="time" position="bottom">
           <van-datetime-picker
               class="time-wrap"
               @confirm="handleTime"

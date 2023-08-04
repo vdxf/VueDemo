@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     fetchBalance() {
-      this.billArr =
+      // this.billArr =
     }
   }
 }
