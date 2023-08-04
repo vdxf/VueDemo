@@ -5,19 +5,45 @@
         <div class="balance-icon">
         </div>
         <h2>可用余额</h2>
+<<<<<<< HEAD
         <h1>xxx</h1>
       </div>
       <div class="home-btn-wrap">
         <router-link to="/account/consumption" class="go-account go-consumption">消费</router-link>
         <router-link to="/account/entry" class="go-account go-entry">入账</router-link>
+=======
+        <h1>{{ totalBalance }}.00</h1>
+      </div>
+      <div class="home-btn-wrap">
+        <router-link to="/consumption" class="go-account go-consumption">消费</router-link>
+        <router-link to="/entry" class="go-account go-entry">入账</router-link>
+>>>>>>> dev
       </div>
     </div>
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 export default {
 
+=======
+import Util from '@/assets/lib/Util'
+export default {
+  data () {
+    return {
+      totalBalance: 0,
+    }
+  },
+  created() {
+    this.fetchBalance()
+  },
+  methods: {
+    fetchBalance () {
+      this.totalBalance = Util.TotalBalance.query()
+    }
+  }
+>>>>>>> dev
 }
 </script>
 

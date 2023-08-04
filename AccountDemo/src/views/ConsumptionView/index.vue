@@ -3,12 +3,21 @@
     <div class="header-title">消费：</div>
     <ul class="input-warp">
       <li>
+<<<<<<< HEAD
         <van-cell title="日期:" :value="date" @click="show = true" />
         <van-calendar v-model="show" @confirm="handleOnConfirm" :min-date="minDate" :max-date="maxDate" :show-confirm="false"/>
       </li>
       <li>
         <van-cell is-link @click="handleTimePopup">时间: <span>{{currentTime}}</span></van-cell>
         <van-popup v-model="time">
+=======
+        <van-cell title="日期:" :value="dateValue" @click="show = true" />
+        <van-calendar v-model="show" @confirm="handleOnConfirm" :min-date="minDate" :max-date="maxDate" :show-confirm="false"/>
+      </li>
+      <li>
+        <van-cell is-link @click="handleTimePopup">时间: <span>{{timeValue}}</span></van-cell>
+        <van-popup v-model="time" position="bottom">
+>>>>>>> dev
           <van-datetime-picker
               class="time-wrap"
               @confirm="handleTime"
@@ -19,7 +28,11 @@
         </van-popup>
       </li>
       <li>
+<<<<<<< HEAD
         <van-cell is-link @click="handleConsumptionPopup">消费类型: <span>{{columnsValue}}</span></van-cell>
+=======
+        <van-cell is-link @click="handleConsumptionPopup">消费类型: <span>{{accountType}}</span></van-cell>
+>>>>>>> dev
         <van-popup v-model="type">
         <van-picker
             show-toolbar
@@ -30,10 +43,17 @@
         </van-popup>
       </li>
       <li>
+<<<<<<< HEAD
           <van-field v-model="money" type="number" label="金额（￥）：" />
       </li>
       <li>
           <van-field v-model="note" type="text" label="备注：" />
+=======
+          <van-field v-model="sumValue" type="number" label="金额（￥）：" />
+      </li>
+      <li>
+          <van-field v-model="remarkValue" type="text" label="备注：" />
+>>>>>>> dev
       </li>
     </ul>
     <button class="sure-btn" @click="handleSubBill">确认</button>
@@ -41,6 +61,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
   export default {
     data(){
       return {
@@ -53,6 +74,22 @@
         type: false,
         money: '',
         note: '',
+=======
+import { Toast } from 'vant';
+import Util from "@/assets/lib/Util";
+  export default {
+    data(){
+      return {
+        dateValue: '',
+        show: false,
+        timeValue: '',
+        time: false,
+        columns: ['水果零食','餐饮伙食', '出行旅游', '网上购物', '生活日常', '租房水电', '医疗药物','其它消费'],
+        accountType: '水果零食',
+        type: false,
+        sumValue: '',
+        remarkValue: '',
+>>>>>>> dev
         minDate: new Date(2010, 0, 1),
         maxDate: new Date(),
       }
@@ -63,12 +100,17 @@
       },
       handleOnConfirm (date) {
         this.show = false;
+<<<<<<< HEAD
         this.date = this.formatDate(date);
+=======
+        this.dateValue = this.formatDate(date);
+>>>>>>> dev
       },
       handleTimePopup () {
         this.time = true;
       },
       handleTime (value) {
+<<<<<<< HEAD
         this.currentTime = value
         this.time = false
       },
@@ -82,6 +124,74 @@
       handleTypeCancel() {
         this.type = false;
       },
+=======
+        this.timeValue = value
+        this.time = false
+      },
+      handleConsumptionPopup () {
+        this.type = true;
+      },
+      handleTypeConfirm (value) {
+        this.accountType = value
+        this.type = false;
+      },
+      handleTypeCancel () {
+        this.type = false;
+      },
+      handleSubBill () {
+        if (!this.sumValue) {
+          Toast('请填写消费金额')
+        }
+        const bill = {
+          id: Date.parse(new Date()),
+          sumValue: this.sumValue,
+          dateValue: this.dateValue,
+          timeValue: this.timeValue,
+          remarkValue: this.remarkValue,
+          accountType: this.accountType,
+          billTypeNumber: this.billTypeNumber(this.accountType),
+          consumptionOrEntry: 0,
+        }
+        Util.Bill.save(bill)
+        Toast('记账成功')
+        this.resetValue()
+      },
+      resetValue () {
+        this.sumValue = ''
+        this.remarkValue = ''
+        this.dateValue = ''
+        this.timeValue = ''
+      },
+      billTypeNumber ( accountType ) {
+        switch ( accountType[0] ) {
+          case '水果零食':
+            accountType = 'sgls';
+            break;
+          case '餐饮伙食':
+            accountType = 'cyhs';
+            break;
+          case '出行旅游':
+            accountType = 'cxly';
+            break;
+          case '网上购物':
+            accountType = 'wsgw';
+            break;
+          case '生活日常':
+            accountType = 'shrc';
+            break;
+          case '租房水电':
+            accountType = 'cfsd';
+            break;
+          case '医疗药物':
+            accountType = 'ylyw';
+            break;
+          case '其它消费':
+            accountType = 'qt';
+            break;
+        }
+        return accountType
+      }
+>>>>>>> dev
     },
   }
 </script>
