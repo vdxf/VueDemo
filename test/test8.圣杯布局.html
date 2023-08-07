@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            min-width: 600px;
+            color: #fff;
+            text-align: center;
+            font-size: 20px;
+        }
+        .header, .footer {
+            height: 60px;
+            line-height: 60px;
+            background-color: #000;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+        }
+        .left {
+            background-color: pink;
+            order: 1;
+        }
+        .content {
+            background-color: #ccc;
+            height: 800px;
+            line-height: 800px;
+            flex: 1;
+            order: 2;
+        }
+        .right {
+            background-color: pink;
+            order: 3;
+        }
+        .column {
+            width: 200px;
+            height: 300px;
+            line-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        header
+    </div>
+    <div class="container">
+        <div class="content">
+            content
+        </div>
+        <div class="left column">
+            left
+        </div>
+        <div class="right column">
+            right
+        </div>
+    </div>
+    <div class="footer">
+        footer
+    </div>
+</body>
+</html>

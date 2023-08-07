@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // 高阶函数的特点之一： 至少有一个函数作为参数
+
+        const arr = [1, 2, 3, 4, 5, 6, 7]
+
+        // 1. 手写forEach函数(高阶函数)
+
+        // arr.forEach( function (item, index, array) {
+        //     console.log(item)
+        // } )
+
+        // 将方法添加到数组的原型上面
+        // Array.prototype.myForEach = function (fn) {
+        //     for (let i = 0; i < this.length; i++) {
+        //         fn (this[i], i, this)
+        //     }
+        // }
+        // arr.myForEach(function (item, index, array) {
+        //     // console.log(item)
+        //     if ( item % 2 === 0 ) {
+        //         console.log(item)
+        //     }
+        // })
+
+        // 2. 手写find函数(高阶函数)
+
+        // const foundResult = arr.find( function ( item, index, array ) {
+        //     // console.log(item)
+        //     return item > 2
+        // } )
+        // console.log(foundResult)  // 3 找到符合条件的项,并且返回第一项
+
+        // Array.prototype.myFind = function ( fn ) {
+        //     for (let i = 0; i < this.length; i++) {
+        //         let isFlag = fn ( this[i], i, this )
+
+        //         if (isFlag) return this[i]
+        //     }
+        // }
+        // const findResult = arr.myFind( function (item, index, array) {
+        //     console.log(item)
+        //     // return item % 2 === 0
+        // } )
+        // console.log(findResult)
+
+         // 3. 手写sort函数(高阶函数)
+
+        const arr1 = [2, 5, 1, 12, 23, 54]
+
+        // const result = arr1.sort()
+        // console.log(result) //  [1, 12, 2, 23, 5, 54]
+
+        // const upResult = arr1.sort( function (a, b) {
+        //     return a - b
+        // } )
+        // console.log(upResult)  // 升序：  [1, 2, 5, 12, 23, 54]
+
+        // const downResult = arr1.sort( function (a, b) {
+        //     return b -a
+        // } )
+        // console.log(downResult) // 降序：[54, 23, 12, 5, 2, 1]
+
+
+        // for ( let i = 0; i < arr1.length; i++ ) {
+        //     for (let j = 0; j < arr1.length - i - 1; j++ ) {
+        //         if (arr1[j] > arr1[j + 1]) {
+        //             [arr1[j], arr1[j + 1]] = [arr1[j + 1], arr1[j]]
+        //         }
+        //     }
+        // }
+        // console.log(arr1)
+
+
+        Array.prototype.mySort = function (fn) {
+            if (!fn) return 
+
+            for ( let i = 0; i < this.length; i++ ) {
+                for (let j = 0; j < this.length - i - 1; j++ ) {
+                    if (fn(this[j], this[j + 1]) > 0) {
+                        [this[j], arr1[j + 1]] = [this[j + 1], this[j]]
+                    }
+                }
+            }
+        }
+        arr1.mySort(function (a, b) {
+            return a - b
+        })
+        console.log(arr1)
+    </script>
+</body>
+</html>
