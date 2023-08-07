@@ -20,7 +20,7 @@ const Util = function (win) {
                 if (yearValue) {
                     let arr = []
                     billArr.forEach(( item, index ) => {
-                        if ( item.dataValue.split('-')[0] === yearValue ) {
+                        if ( item.dateValue.split('-')[0] === yearValue ) {
                             arr.push(item)
                         }
                     });
@@ -29,7 +29,7 @@ const Util = function (win) {
                 if (monthValue) {
                     let arr = []
                     billArr.forEach(( item, index ) => {
-                        if ( item.dataValue.split('-')[1] === monthValue ) {
+                        if ( item.dateValue.split('-')[1] === monthValue ) {
                             arr.push(item)
                         }
                     });
@@ -38,7 +38,7 @@ const Util = function (win) {
                 if (dayValue) {
                     let arr = []
                     billArr.forEach(( item, index ) => {
-                        if ( item.dataValue.split('-')[2] === dayValue ) {
+                        if ( item.dateValue.split('-')[2] === dayValue ) {
                             arr.push(item)
                         }
                     });
@@ -48,11 +48,14 @@ const Util = function (win) {
                     let arr = []
                     checkValueArr.forEach( ( item, index ) => {
                         billArr.forEach( ( it, i ) => {
+                            console.log(item,it)
                             if ( it.billTypeNumber === item ) {
                                 arr.push(it)
                             }
                         } )
                     });
+                    console.log(arr)
+
                     billArr = arr
                 }
             }

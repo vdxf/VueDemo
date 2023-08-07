@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
-  <div>
-    <router-view></router-view>
-=======
-  <div class="account-wrap">
+  <div class="container-view">
     <router-view></router-view>
 
     <div class="header-title">记账：</div>
@@ -11,7 +7,6 @@
       <router-link to="/consumption" class="go-account go-consumption">消费</router-link>
       <router-link to="/entry" class="go-account go-entry">入账</router-link>
     </div>
->>>>>>> dev
   </div>
 </template>
 
@@ -23,19 +18,6 @@
 
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
-<<<<<<< HEAD
-=======
-.account-wrap {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding: j(20);
-}
-.header-title {
-  color: #1D8CE0;
-  font-size: j(18);
-  padding-bottom: j(20);
-}
 .go-btn-box {
   margin: auto;
 }
@@ -58,5 +40,4 @@
   background-color: #69ce72;
   box-shadow: 0 3px 0 0 #13CE66;
 }
->>>>>>> dev
 </style>

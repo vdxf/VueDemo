@@ -128,10 +128,6 @@ export default {
     handleRefresh() {
       this.reqDataList(1)
     },
-    //获取图片url路径
-    imageUrl(filepath) {
-      return ("https://img.daysnap.cn/api/" + filepath)
-    },
     handleImageDetail(id) {
       this.$router.push({
         path: '/imagedetail',

@@ -23,10 +23,6 @@
         <router-link class="c-button outline" to="/register">注册账号</router-link>
       </div>
 
-      <transition name="fade">
-        <loading v-if="isLoading"></loading>
-      </transition>
-
     </div>
   </div>
 </template>
@@ -41,7 +37,6 @@ export default {
       type: 'password',
       email: '2532499815@qq.com',
       password: "123456789",
-      isLoading: false,
     };
   },
   methods: {
@@ -62,7 +57,6 @@ export default {
       const {email, password} = this
       doLogin({email, password}).then(result => {
         window.localStorage.setItem('token', result.token)
-        this.isLoading = false
         this.$router.replace('/home')
         Toast.success('登录成功')
       }).catch(error => {

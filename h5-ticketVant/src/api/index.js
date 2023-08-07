@@ -11,13 +11,13 @@ export const doEmailSend = (data = {}) => {
 }
 
 // 注册
-export const doRegister = (data = {}) => {
+export const doRegister = withLoading((data) => {
     return request({
         url: '/api/v1/auth/signup',
         method: 'POST',
         data,
     })
-}
+})
 
 // 登录
 export const doLogin = (data = {}) => {

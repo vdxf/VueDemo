@@ -5,56 +5,36 @@ body,
     height: 100%;
     overflow: hidden;
 }
-input::-webkit-input-placeholder {
-    color: #D6D6D6;
-}
-a {
-    text-decoration: none;
-}
-input {
-    min-width: 0;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    box-sizing: border-box;
-}
-.c-view-wrap {
-    padding-top: j(28);
-    padding-bottom: j(80);
-    height: 100vh;
-    background: #FAFAFA;
-    box-sizing: border-box;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-.c-card {
-    position: relative;
-    box-sizing: border-box;
-    width: j(350);
-    margin: 0 auto;
-    background: #FFFFFF;
-    box-shadow: 0px 0px j(4) 0px rgba(0, 0, 0, 0.08);
-    border-radius: j(20);
-    padding: j(16);
-}
-
-
-.c-button{
+.container-view {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #fff;
-    width: j(310);
-    height: j(48);
-    font-size: j(16);
-    border-radius: j(8);
-    background-color: #EB1E23;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+    padding-bottom: j(55);
+    background-color: #F9FAFC;
+}
+.header-title {
+    color: #1D8CE0;
+    font-size: j(18);
+    padding: j(20);
+    display: flex;
+    justify-content: space-between;
+}
+.input-warp {
+    display: flex;
+    flex-direction: column;
+    padding: 0 j(10);
+}
+
+.sure-btn {
     border: none;
-    margin: 0 auto;
-    text-decoration: none;
-    &.outline{
-        background-color: transparent;
-        color: #EB1E23;
-    }
+    margin: j(20) j(20) j(40);
+    height: j(40);
+    line-height: j(40);
+    border-radius: j(6);
+    background-color: #bbb;
+    box-shadow: 0 3px 0 0 #999;
+    color: #fff;
+    font-size: j(16);
 }

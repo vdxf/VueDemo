@@ -5,29 +5,17 @@
         <div class="balance-icon">
         </div>
         <h2>可用余额</h2>
-<<<<<<< HEAD
-        <h1>xxx</h1>
-      </div>
-      <div class="home-btn-wrap">
-        <router-link to="/account/consumption" class="go-account go-consumption">消费</router-link>
-        <router-link to="/account/entry" class="go-account go-entry">入账</router-link>
-=======
         <h1>{{ totalBalance }}.00</h1>
       </div>
       <div class="home-btn-wrap">
         <router-link to="/consumption" class="go-account go-consumption">消费</router-link>
         <router-link to="/entry" class="go-account go-entry">入账</router-link>
->>>>>>> dev
       </div>
     </div>
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
-export default {
-
-=======
 import Util from '@/assets/lib/Util'
 export default {
   data () {
@@ -43,29 +31,30 @@ export default {
       this.totalBalance = Util.TotalBalance.query()
     }
   }
->>>>>>> dev
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
-.container-view, .home-wrap{
+.container-view {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  padding-bottom: j(55);
-  position: absolute;
-  background-color: #F9FAFC;
   overflow: hidden;
-  left: 0;
-  right: 0;
+  height: 100vh;
+  position: relative;
+  padding-bottom: j(55);
+  background-color: #F9FAFC;
 }
 .home-wrap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  bottom: 0;
 }
 .balance-wrap {
   position: relative;

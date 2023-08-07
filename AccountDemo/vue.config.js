@@ -6,22 +6,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     host: '0.0.0.0',
-    proxy: {
-      '/api': {
-        target: 'https://api.daysnap.cn',
-        changeOrigin: true,
-        pathRewrite: {
-          // '^/api': ''
-        }
-      },
-      '/api2': {
-        target: 'https://api2.daysnap.cn',
-        changeOrigin: true,
-        pathRewrite: {
-          // '^/api': ''
-        }
-      },
-    },
   },
   configureWebpack: {
     plugins: [

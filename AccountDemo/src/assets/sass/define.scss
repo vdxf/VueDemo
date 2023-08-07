@@ -1,18 +1,3 @@
-$width: 375px;
-$height:812px;
-$color:#fff;
-$margin: 0 auto;
-$position-r:relative;
-$position-a:absolute;
-$top:0;
-$left:0;
-$right:0;
-$buttom:0;
-$overflow: hidden;
-$display-b: block;
-$display-f:flex;
-$align-items: center;
-$text-align: center;
 
 @function j($px, $base-font-size: 37.5px) {
     @if (unitless($px)) {

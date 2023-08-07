@@ -19,21 +19,6 @@ const routes = [
                 path: '/account',
                 component: () => import('@/views/AccountView'),
                 meta: {title: '记账'},
-<<<<<<< HEAD
-                children: [
-                    {
-                        path: 'consumption',
-                        component: () => import('@/views/ConsumptionView'),
-                        meta: {title: '消费'},
-                    },
-                    {
-                        path: 'entry',
-                        component: () => import('@/views/EntryView'),
-                        meta: {title: '入账'},
-                    },
-                ]
-=======
->>>>>>> dev
             },
             {
                 path: '/bill',
@@ -45,8 +30,6 @@ const routes = [
                 component: () => import('@/views/ChartView'),
                 meta: {title: '分析'},
             },
-<<<<<<< HEAD
-=======
             {
                 path: '/consumption',
                 component: () => import('@/views/ConsumptionView'),
@@ -57,7 +40,6 @@ const routes = [
                 component: () => import('@/views/EntryView'),
                 meta: {title: '入账'},
             },
->>>>>>> dev
         ]
     },
 ]

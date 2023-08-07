@@ -1,23 +1,14 @@
 <template>
-  <div class="consumption-wrap">
+  <div class="container-view">
     <div class="header-title">消费：</div>
     <ul class="input-warp">
       <li>
-<<<<<<< HEAD
-        <van-cell title="日期:" :value="date" @click="show = true" />
-        <van-calendar v-model="show" @confirm="handleOnConfirm" :min-date="minDate" :max-date="maxDate" :show-confirm="false"/>
-      </li>
-      <li>
-        <van-cell is-link @click="handleTimePopup">时间: <span>{{currentTime}}</span></van-cell>
-        <van-popup v-model="time">
-=======
         <van-cell title="日期:" :value="dateValue" @click="show = true" />
         <van-calendar v-model="show" @confirm="handleOnConfirm" :min-date="minDate" :max-date="maxDate" :show-confirm="false"/>
       </li>
       <li>
         <van-cell is-link @click="handleTimePopup">时间: <span>{{timeValue}}</span></van-cell>
         <van-popup v-model="time" position="bottom">
->>>>>>> dev
           <van-datetime-picker
               class="time-wrap"
               @confirm="handleTime"
@@ -28,12 +19,8 @@
         </van-popup>
       </li>
       <li>
-<<<<<<< HEAD
-        <van-cell is-link @click="handleConsumptionPopup">消费类型: <span>{{columnsValue}}</span></van-cell>
-=======
         <van-cell is-link @click="handleConsumptionPopup">消费类型: <span>{{accountType}}</span></van-cell>
->>>>>>> dev
-        <van-popup v-model="type">
+        <van-popup v-model="type" position="bottom">
         <van-picker
             show-toolbar
             :columns="columns"
@@ -43,39 +30,18 @@
         </van-popup>
       </li>
       <li>
-<<<<<<< HEAD
-          <van-field v-model="money" type="number" label="金额（￥）：" />
-      </li>
-      <li>
-          <van-field v-model="note" type="text" label="备注：" />
-=======
           <van-field v-model="sumValue" type="number" label="金额（￥）：" />
       </li>
       <li>
           <van-field v-model="remarkValue" type="text" label="备注：" />
->>>>>>> dev
       </li>
     </ul>
-    <button class="sure-btn" @click="handleSubBill">确认</button>
+    <button class="sure-btn" @click="handleSubBill" :class="{'sure-btn-active':sumValue}">确认</button>
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
-  export default {
-    data(){
-      return {
-        date: '',
-        show: false,
-        currentTime: '',
-        time: false,
-        columns: ['水果零食','餐饮伙食', '出行旅游', '网上购物', '生活日常', '租房水电', '医疗药物','其它消费'],
-        columnsValue: '',
-        type: false,
-        money: '',
-        note: '',
-=======
-import { Toast } from 'vant';
+import { Toast } from 'vant'
 import Util from "@/assets/lib/Util";
   export default {
     data(){
@@ -89,7 +55,6 @@ import Util from "@/assets/lib/Util";
         type: false,
         sumValue: '',
         remarkValue: '',
->>>>>>> dev
         minDate: new Date(2010, 0, 1),
         maxDate: new Date(),
       }
@@ -100,61 +65,43 @@ import Util from "@/assets/lib/Util";
       },
       handleOnConfirm (date) {
         this.show = false;
-<<<<<<< HEAD
-        this.date = this.formatDate(date);
-=======
         this.dateValue = this.formatDate(date);
->>>>>>> dev
       },
       handleTimePopup () {
         this.time = true;
       },
       handleTime (value) {
-<<<<<<< HEAD
-        this.currentTime = value
+        this.timeValue = value
         this.time = false
       },
       handleConsumptionPopup(){
         this.type = true;
       },
       handleTypeConfirm(value) {
-        this.columnsValue = value
+        this.accountType = value
         this.type = false;
       },
       handleTypeCancel() {
         this.type = false;
       },
-=======
-        this.timeValue = value
-        this.time = false
-      },
-      handleConsumptionPopup () {
-        this.type = true;
-      },
-      handleTypeConfirm (value) {
-        this.accountType = value
-        this.type = false;
-      },
-      handleTypeCancel () {
-        this.type = false;
-      },
       handleSubBill () {
         if (!this.sumValue) {
           Toast('请填写消费金额')
+        } else {
+          const bill = {
+            id: Date.parse(new Date()),
+            sumValue: this.sumValue,
+            dateValue: this.dateValue,
+            timeValue: this.timeValue,
+            remarkValue: this.remarkValue,
+            accountType: this.accountType,
+            billTypeNumber: this.billTypeNumber(this.accountType),
+            consumptionOrEntry: 0,
+          }
+          Util.Bill.save(bill)
+          Toast('记账成功')
+          this.resetValue()
         }
-        const bill = {
-          id: Date.parse(new Date()),
-          sumValue: this.sumValue,
-          dateValue: this.dateValue,
-          timeValue: this.timeValue,
-          remarkValue: this.remarkValue,
-          accountType: this.accountType,
-          billTypeNumber: this.billTypeNumber(this.accountType),
-          consumptionOrEntry: 0,
-        }
-        Util.Bill.save(bill)
-        Toast('记账成功')
-        this.resetValue()
       },
       resetValue () {
         this.sumValue = ''
@@ -163,7 +110,7 @@ import Util from "@/assets/lib/Util";
         this.timeValue = ''
       },
       billTypeNumber ( accountType ) {
-        switch ( accountType[0] ) {
+        switch ( accountType ) {
           case '水果零食':
             accountType = 'sgls';
             break;
@@ -191,28 +138,13 @@ import Util from "@/assets/lib/Util";
         }
         return accountType
       }
->>>>>>> dev
     },
   }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
-.consumption-wrap {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding: j(20);
-}
-.header-title {
-  color: #1D8CE0;
-  font-size: j(18);
-  padding-bottom: j(20);
-  border-bottom: 1px solid #d9d9d9;
-}
 .input-warp {
-  display: flex;
-  flex-direction: column;
   li {
     display: flex;
     flex-direction: row;
@@ -236,18 +168,11 @@ import Util from "@/assets/lib/Util";
   }
 }
 .van-cell {
+  background: transparent;
   padding: 0;
 }
-.sure-btn {
-  border: none;
-  margin-top: j(20);
-  margin-bottom: j(40);
-  height: j(40);
-  line-height: j(40);
-  border-radius: j(6);
-  background-color: #bbb;
-  box-shadow: 0 3px 0 0 #999;
-  color: #fff;
-  font-size: j(16);
+.sure-btn-active {
+  background-color: #FF4949;
+  box-shadow: 0 3px 0 0 red;
 }
 </style>
