@@ -1,13 +1,13 @@
 <template>
   <div class="container-view">
-    <div class="bill-box">
+    <div class="bill-box" :class="{'open-menu': isFilterPopup}">
 
       <div class="header-title">
         账单：
-        <i @click="filterPopup = !filterPopup"></i>
+        <i @click="isFilterPopup = !isFilterPopup"></i>
       </div>
 
-      <div class="filter-menu" v-show="filterPopup">
+      <div class="filter-menu">
         <div class="header-title">
           筛选：
         </div>
@@ -132,6 +132,7 @@
 
 <script>
 import Util from "@/assets/lib/Util"
+import {Toast} from "vant";
 
 export default {
   data () {
@@ -168,12 +169,12 @@ export default {
       ],
       checkValueArr: '',
       arr: [],
+      isFilterPopup: false,
     }
   },
   created () {
     this.fetchBalance()
     this.countSum()
-    this.balanceSum = this.entrySum - this.consumptionSum
   },
   methods: {
     handleCheckValue (value) {
@@ -222,8 +223,11 @@ export default {
     },
     fetchBalance ( queryCondition ) {
       this.billArr = Util.Bill.query( queryCondition )
+      console.log(this.billArr)
     },
     countSum () {
+      this.entrySum = 0
+      this.consumptionSum = 0
       this.billArr.forEach((item, index) => {
         if (item.consumptionOrEntry === 1) {
           this.entrySum = this.entrySum + (+item.sumValue)
@@ -231,6 +235,7 @@ export default {
           this.consumptionSum = this.consumptionSum + (+item.sumValue)
         }
       })
+      this.balanceSum = this.entrySum - this.consumptionSum
     },
     handleDelete (bill) {
       this.isCancel = true
@@ -247,6 +252,10 @@ export default {
       this.isCancel = false
     },
     handleFilterBill () {
+      Toast.loading({
+        message: 'Loading...',
+        forbidClick: true,
+      });
       const queryCondition = {
         yearValue: this.yearValue,
         monthValue: this.monthValue,
@@ -255,7 +264,7 @@ export default {
       }
       this.fetchBalance( queryCondition )
       this.countSum()
-      this.filterPopup = false
+      this.isFilterPopup = false
     },
     handleResetFilter () {
       this.yearValue = '';
@@ -270,16 +279,22 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
-
 .bill-box {
   position: relative;
-  display: block;
   height: 100%;
   font-size: j(12);
+  transition: all .5s;
+  &.open-menu{
+    transform: translate3d(-80%,0,0);
+  }
 }
 
 .bill-content {
-  height: 100%;
+  position: absolute;
+  top: j(64);
+  bottom: j(40);
+  width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -503,10 +518,12 @@ export default {
   top: 0;
   bottom: 0;
   right: 0;
-  z-index: 2;
+  z-index: 1;
   width: 80%;
   height: 100%;
   background-color: #fff;
+  transition: all .5s;
+  transform: translate3d(100%,0,0);
 }
 .input-warp {
   height: 100%;
