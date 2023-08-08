@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>filter</h2>
+    <script>
+        let a = [1, 2, 3, 4, 11, 22]
+        // current: 当前传的值，index： 当前值的下标， array：这个数组
+        let b = a.filter( ( current, index, array ) => {
+            return current < 10
+        } )
+        console.log(a)
+        console.log(b)
+    </script>
+</body>
+</html>

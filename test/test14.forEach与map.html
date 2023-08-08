@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>forEach() 与 map()</h2>
+    <script>
+
+        // forEach
+        // 1. 没有返回值
+        // 2. 不能用 break 打断
+        // 3. 遍历的是value
+
+        // let arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+        // let res = arr.forEach( element => {
+        //     return element + '1'
+        // } )
+        // console.log(res)
+
+        // map
+        // 1. 有返回值 (数组) 默认 return 是 undefined
+        // 2. 接受的参数是一个函数(key, value)
+        // 3. 不能用 break 打断
+
+        let arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+        let res = arr.map( ( value, key ) => {
+            return value + '1'
+        } )
+        console.log(res)
+    </script>
+</body>
+</html>

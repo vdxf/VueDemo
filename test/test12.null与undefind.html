@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>null与undefind</h2>
+    <script>
+        // console.log(typeof null)    // 表示为"无"对象 0
+        // console.log(typeof undefind)    // 表示"无"的原始值 NaN
+
+        // undefined出现的四种情况
+
+        // 1. 已经声明未赋值
+        // let a
+        // console.log(a)
+
+        // 2. 对象某个属性不存在
+        // let obj = {}
+        // console.log(obj.a) 
+
+        // 3. 传参的时候少了参数
+        // function fn( a, b ) {
+        //     console.log(a, b)
+        // }
+        // fn(4)
+
+        // 4. 函数的默认返回值
+        // function a() {
+        //     console.log('1')
+        //     // return 123
+        // }
+        // console.log(a())
+
+
+        // null
+        // 1. 手动释放内存
+        let obj = {}
+        obj = null
+
+        // 2. 作为参数 (此参数不是对象)
+
+        // 3. 原型链的顶端
+
+    </script>
+</body>
+</html>

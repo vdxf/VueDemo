@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        img {
+            display: block;
+            width: 800px;
+            height: 800px;
+        }
+    </style>
+</head>
+<body>
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/1.webp" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/2.webp" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/3.webp" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/4.webp" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/5.webp" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/6.webp" alt="">
+    <input type="file">
+    <script>
+        let num = document.getElementsByTagName('img').length
+        let img = document.getElementsByTagName('img')
+        let n = 0
+
+        lazyload()
+
+        window.onscroll = lazyload
+
+        function lazyload() {
+            let seeHeight = document.documentElement.clientHeight
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+
+            for ( let i = n; i < num; i++ ) {
+                if ( img[i].offsetTop < seeHeight + scrollTop ) {
+                    img[i].src = img[i].getAttribute('data-src')
+                    n = i + 1
+                }
+            }
+        }
+    </script>
+</body>
+</html>

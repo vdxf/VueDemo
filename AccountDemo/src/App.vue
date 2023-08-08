@@ -44,7 +44,7 @@
     bottom: 0;
   }
   .pageJumpRight-enter-active,
-  .pageJumpRight.leave-active,
+  .pageJumpRight-leave-active,
   .pageJumpLeft-enter-active,
   .pageJumpLeft-leave-active {
     will-change: transform;

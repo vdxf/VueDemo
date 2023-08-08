@@ -6,6 +6,39 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>性能优化案例</h1>
+    <img class="img1" src="" alt="" width="960">
+    <div class="img-con">
+        <img class="img2" src="" alt="" height="540">
+    </div>
+    <button class="btn1">请求图片</button>
+    <script>
+        let btn1 = document.querySelector('.btn1')
+        btn1.onclick = function () {
+            let myImage = ( function () {
+                let imgNode = document.querySelector('.img2')
+                return {
+                    setSrc: function (src) {
+                        imgNode.src = src
+                    }
+                }
+            } ) ()
+
+            let proxyImage = ( function () {
+                let img = new Image
+                img.onload = function () {
+                    myImage.setSrc(this.src)
+                }
+                return {
+                    setSrc: function (src) {
+                        myImage.setSrc('./images/Spinner-1s-200px.svg')
+                        img.src = src
+                    }
+                }
+            } ) ()
+
+            proxyImage.setSrc('./images/login.png')
+        }
+    </script>
 </body>
 </html>
