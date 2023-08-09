@@ -133,6 +133,7 @@
 <script>
 import Util from "@/assets/lib/Util"
 import {Toast} from "vant";
+import GestureMobile from "@/assets/lib/GestureMobile";
 
 export default {
   data () {
@@ -173,6 +174,7 @@ export default {
     }
   },
   created () {
+    this.gestureMobile()
     this.fetchBalance()
     this.countSum()
   },
@@ -273,6 +275,19 @@ export default {
       this.checkValueArr = '';
       this.arr = [];
     },
+    gestureMobile () {
+      this.$nextTick(() => {
+        let that = this
+        GestureMobile(this.$el, {
+          leftCallBackFun () {
+            that.isFilterPopup = true
+          },
+          rightCallBackFun () {
+            that.isFilterPopup = false
+          }
+        })
+      } )
+    }
   }
 }
 </script>
