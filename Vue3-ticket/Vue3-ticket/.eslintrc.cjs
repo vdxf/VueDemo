@@ -15,5 +15,8 @@ module.exports = {
   },
   globals: {
     eruda: true
+  },
+  rules: {
+    'vue/multi-word-component-names': 'off'
   }
 }
