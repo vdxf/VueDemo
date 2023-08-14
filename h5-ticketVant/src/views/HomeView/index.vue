@@ -101,7 +101,6 @@ export default {
         forbidClick: true,
       });
       this.handleRefresh()
-      this.$refs.view.$el.scrollTop = 0
     },
     //获取图片列表
     reqDataList(current) {
@@ -120,6 +119,7 @@ export default {
       }).finally(() => {
         this.loading = false
         this.refreshing = false
+        this.$refs.view.$el.scrollTop = 0
       })
     },
     handleLoad() {

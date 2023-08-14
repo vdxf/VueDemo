@@ -53,7 +53,7 @@ export default {
 
       doFile(formData).then(result => {
         this.fileId = result.id
-        this.imgUrl = ("https://img.daysnap.cn/api/" + result.filepath)
+        this.imgUrl = ("https://img.daysnap.cn/" + result.filepath)
       }).catch(error => {
         alert(error.response.data.msg)
       })
@@ -89,7 +89,7 @@ export default {
       this.title = title
       this.description = description
       this.type = type
-      this.imgUrl = "https://img.daysnap.cn/api/" + filepath
+      this.imgUrl = "https://img.daysnap.cn/" + filepath
     }
   },
   components: {

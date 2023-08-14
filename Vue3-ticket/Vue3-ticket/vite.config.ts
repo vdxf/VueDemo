@@ -15,6 +15,16 @@ export default defineConfig({
       resolvers: [VantResolver()]
     })
   ],
+  server: {
+    host: '0.0.0.0',
+    proxy: {
+      '/api': {
+        target: 'https://api.daysnap.cn',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
