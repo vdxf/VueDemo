@@ -70,7 +70,7 @@ const loading = ref(false)
 const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
-const view = ref<any>(null)
+const view = ref()
 const reqDataList = (current: number) => {
   doTabulation({
     current: current,
@@ -90,6 +90,7 @@ const reqDataList = (current: number) => {
     .finally(() => {
       loading.value = false
       refreshing.value = false
+      view.value.$el.scrollTop = 0
     })
 }
 const handleExit = () => {
@@ -105,7 +106,6 @@ const handleLoad = () => {
 const handleSearch = () => {
   keyword1.value = keyword.value
   handleRefresh()
-  view.value.$el.scrollTop = 0
 }
 const handleUpdataImage = (item: any) => {
   const data = toRaw(item)
