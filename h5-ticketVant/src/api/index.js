@@ -84,7 +84,7 @@ export const doDetail = (data) => {
 // 我的收藏
 export const doCollectList = () => {
     return request({
-        url: `/api/v1/collect?current=2&length=10`,
+        url: `/api/v1/collect?current=1&length=10`,
         method: 'GET',
     })
 }
@@ -101,7 +101,7 @@ export const doUpdateUserInformation = (data) => {
 //用户列表
 export const doUserList = () => {
     return request({
-        url: `/api/v1/user?current=10&length=10`,
+        url: `/api/v1/user?current=1&length=10`,
         method: 'GET',
     })
 }

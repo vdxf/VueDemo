@@ -191,6 +191,7 @@ export default {
       this.isUserList = true
       doUserList().then(result => {
         this.UserList = result.list
+        console.log(this.UserList)
       }).catch(error => {
         alert(error.response.data.msg)
       })

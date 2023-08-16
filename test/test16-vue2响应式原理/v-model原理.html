@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../vue.js"></script>
+</head>
+<body>
+  <h2>v-model原理</h2>
+  <!-- 双向数据绑定 -->
+  <input placeholder="请输入名字" id="userName">
+  显示值：<p id="uName"></p>
+  <script>
+    let obj = {}
+    Object.defineProperty(obj, 'name', {
+      get: function () {
+        console.log('取值')
+      },
+      set: function (val) {
+        console.log('设置值')
+        document.getElementById("uName").innerText = val
+      }
+    })
+    document.getElementById("userName").addEventListener('keyup', function () {
+      obj.name = event.target.value
+    })
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- <div id="app">
+    <input placeholder="请输入电话" v-model="tel">
+    <p>{{tel}}</p>
+  </div>
+  <script>
+    new Vue({
+      el:'#app',
+      data () {
+        return {
+          tel: ''
+        }
+      }
+    })
+  </script> -->
+</body>
+</html>

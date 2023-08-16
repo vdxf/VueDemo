@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  因为data()是一个闭包的设计, Vue是一个单页应用, 会有很多组件, 每一个组件都有一个data, 
+  闭包给每个组件都建立一个私有域空间, 保证每个组件之间都有一个私有的作用域, 确保各个组件之间的数据不会互相干扰
+  用纯对象就会有干扰
+  
+  <div id="app">
+    <input placeholder="请输入电话" v-model="tel">
+    <p>{{tel}}</p>
+  </div>
+  <script>
+    new Vue({
+      el:'#app',
+      data () {
+        return {
+          tel: ''
+        }
+      }
+    })
+  </script>
+</body>
+</html>

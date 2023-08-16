@@ -62,9 +62,9 @@ router.beforeEach((to, from, next) => {
     const token = window.localStorage.getItem('token')
 
     if (token) {
-        // 已登录
         if (to.path === '/login') {
-            next('/')
+            // 已登录
+                   next('/')
         } else {
             next()
         }

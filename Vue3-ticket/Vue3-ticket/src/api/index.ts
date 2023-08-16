@@ -81,37 +81,37 @@ export const doDetail = withLoading((id) => {
 })
 
 // 我的收藏
-export const doCollectList = () => {
+export const doCollectList = withLoading(() => {
   return request({
-    url: `/api/v1/collect?current=2&length=10`,
+    url: `/api/v1/collect?current=1&length=10`,
     method: 'GET'
   })
-}
+})
 
 //更新用户信息
-export const doUpdateUserInformation = (data) => {
+export const doUpdateUserInformation = withLoading((data) => {
   return request({
     url: `/api/v1/user/profile`,
     method: 'PATCH',
     data
   })
-}
+})
 
 //用户列表
-export const doUserList = () => {
+export const doUserList = withLoading(() => {
   return request({
-    url: `/api/v1/user?current=10&length=10`,
+    url: `/api/v1/user?current=1&length=10`,
     method: 'GET'
   })
-}
+})
 
 //用户详情
-export const doUserDetails = (id) => {
+export const doUserDetails = withLoading((id: any) => {
   return request({
     url: `/api/v1/user/${id}`,
     method: 'GET'
   })
-}
+})
 
 //修改密码
 export const doUpdatePassword = (data) => {

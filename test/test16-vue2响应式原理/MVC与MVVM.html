@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../vue.js"></script>
+</head>
+<body>
+  MVC的缺点：
+  1.前后端无法独立开发
+  2.前端不够独立，没有自己的数据中心，太过于依赖后台
+  <div id="app">
+    {{message}}
+  </div>
+  <script>
+    new Vue({
+      el:'#app',
+      data () {
+        return {
+          message: 'vue'
+        }
+      }
+    })
+  </script>
+</body>
+</html>

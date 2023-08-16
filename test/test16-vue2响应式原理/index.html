@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  发布订阅模式 与 数据劫持
+  <div id="app">
+    订阅视图-1：<span class="box-1"></span>
+    订阅视图-2：<span class="box-2"></span>
+  </div>
+  <script src="index.js"></script>
+  <script>
+    let obj = {}
+    datas({
+      data: obj,
+      tag: 'view-1',
+      datakey: 'one',
+      selector: '.box-1'
+    })
+
+    datas({
+      data: obj,
+      tag: 'view-2',
+      datakey: 'two',
+      selector: '.box-2'
+    })
+
+    //1. 初始化赋值
+    obj.one = '这是视图一'
+    obj.two = '这是视图二'
+
+    //2.劫持数据，更新者负责重新渲染
+
+
+    //响应式
+    //1. 数据联动(双向绑定)
+    //2. 修妖捕获到修改
+  </script>
+</body>
+</html>

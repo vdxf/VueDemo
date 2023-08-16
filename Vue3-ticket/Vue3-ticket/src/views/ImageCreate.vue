@@ -47,19 +47,16 @@
 </template>
 <script setup lang="ts">
 import { doFile, doGain, doUpdata } from '@/api'
-import { reactive } from 'vue'
 import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const route = useRoute()
 const title = ref<any>('')
 const description = ref('')
 const type = ref('')
 const fileId = ref('')
 const files = ref('')
 const imgUrl = ref('')
-const isLoading = ref(false)
 
 const handleFiles = (event: any) => {
   files.value = event.target.files
@@ -86,6 +83,7 @@ const handleUploadImage = () => {
       id: window.history.state.data.id
     })
       .then((result) => {
+        console.log(result)
         router.replace('/home')
       })
       .catch((error) => {
@@ -99,6 +97,7 @@ const handleUploadImage = () => {
       type: type.value
     })
       .then((result) => {
+        console.log(result)
         router.replace('/home')
       })
       .catch((error) => {

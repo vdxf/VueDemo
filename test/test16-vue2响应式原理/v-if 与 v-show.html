@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../vue.js"></script>
+</head>
+<body>
+  v-if: 不满足条件，不会渲染dom => 单次判断
+  v-show: 隐藏dom => 多次切换，(不能用于权限操作)
+  <div id="app">
+    <button v-if="val === 1">按钮一</button>
+    <button v-if="val === 2">按钮二</button>
+    <button v-show="type">type为true显示</button>
+    <button @click="changeType">改变type</button>
+
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          val: 2,
+          type: false
+        }
+      },
+      methods: {
+        changeType () {
+          this.type = !this.type
+        }
+      }
+    })
+  </script>
+</body>
+</html>

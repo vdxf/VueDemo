@@ -47,7 +47,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { doEmailSend, doRegister } from '@/api/index'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const nickname = ref('')
 const type = ref('password')
 const email = ref('2532499815@qq.com')
@@ -74,7 +76,7 @@ const handleRegister = () => {
     captcha: captcha.value
   })
     .then((result) => {
-      this.$router.push('login')
+      router.push('login')
       console.log(result)
     })
     .catch((error) => {

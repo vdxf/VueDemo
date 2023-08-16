@@ -54,8 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, toRaw, onMounted, watch } from 'vue'
-import { showToast, Dialog, showDialog, showConfirmDialog } from 'vant'
+import { ref, toRaw, watch } from 'vue'
+import { showConfirmDialog } from 'vant'
 import { doDelete, doTabulation } from '@/api/index'
 import VsImage from '@/components/VsImage.vue'
 import { useRouter } from 'vue-router'
@@ -133,7 +133,7 @@ const handleDeleteImage = (id: any) => {
           reqDataList(1)
         })
         .catch((error) => {
-          //
+          console.log(error)
         })
     })
     .catch(() => {

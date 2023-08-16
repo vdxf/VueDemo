@@ -34,7 +34,7 @@ onMounted(() => {
       file.value = result.file
     })
     .catch((error) => {
-      //
+      console.log(error)
     })
 })
 </script>
