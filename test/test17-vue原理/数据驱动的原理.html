@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // data () {}
+
+    // let obj = {
+    //   name: '小明',
+    //   age: 18
+    // }
+    // obj.name = '小花'
+    // obj.age = 19
+
+    // console.log(obj)
+
+
+    let obj = {}
+    let val = 20
+    Object.defineProperty(obj, 'age', {
+      get () {
+        console.log(`age的值被读取了${val}`)
+        return val
+      },
+      set (newVal) {
+        console.log(`age的值被修改了:${newVal}`)
+        val = newVal
+      }
+    })
+  </script>
+</body>
+</html>

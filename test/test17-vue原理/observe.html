@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script type="module">
+    import  { Observe } from './observe.js'
+    let obj = new Observe({
+      name: '小明',
+      age: 18,
+      demo: {
+        a: '123',
+        b: 456
+      }
+    })
+    console.log(obj.value.name)
+    obj.value.age = 20
+
+    console.log(obj.value.demo.a)
+    obj.value.demo.b = 1234
+  </script>
+</body>
+</html>
