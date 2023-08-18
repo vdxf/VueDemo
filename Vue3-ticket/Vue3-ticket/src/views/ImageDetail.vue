@@ -19,16 +19,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { doDetail } from '@/api'
+import { useRoute } from 'vue-router'
 
-let id = ''
+const id = ref<any>()
 const detailList = ref<any>('')
 const file = ref<any>('')
-onMounted(() => {
-  id = window.history.state.id
-  console.log(id)
-  doDetail(id)
+
+const route = useRoute()
+onBeforeMount(() => {
+  id.value = route.query.id
+  console.log(id.value)
+  doDetail(id.value)
     .then((result) => {
       detailList.value = result
       file.value = result.file

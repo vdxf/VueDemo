@@ -47,14 +47,14 @@
 </template>
 <script setup lang="ts">
 import { doFile, doGain, doUpdata } from '@/api'
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onBeforeMount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
 const title = ref<any>('')
-const description = ref('')
-const type = ref('')
-const fileId = ref('')
+const description = ref<any>('')
+const type = ref<any>('')
+const fileId = ref<any>('')
 const files = ref('')
 const imgUrl = ref('')
 
@@ -74,13 +74,13 @@ const handleFiles = (event: any) => {
 }
 const handleType = () => {}
 const handleUploadImage = () => {
-  if (window.history.state.data) {
+  if (route.query.id) {
     doUpdata({
       title: title.value,
       description: description.value,
       fileId: fileId.value,
       type: type.value,
-      id: window.history.state.data.id
+      id: route.query.id
     })
       .then((result) => {
         console.log(result)
@@ -105,14 +105,16 @@ const handleUploadImage = () => {
       })
   }
 }
-onMounted(() => {
-  if (window.history.state.data) {
-    let datas = window.history.state.data
+
+const route = useRoute()
+onBeforeMount(() => {
+  if (route.query.id) {
+    let datas = route.query
     title.value = datas.title
     description.value = datas.description
     type.value = datas.type
-    fileId.value = datas.file.id
-    imgUrl.value = 'https://img.daysnap.cn/' + datas.file.filepath
+    fileId.value = datas.fileId
+    imgUrl.value = 'https://img.daysnap.cn/' + datas.imgUrl
   }
 })
 </script>

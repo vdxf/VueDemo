@@ -16,12 +16,29 @@
 
 <body>
 
-    <button class="active">按钮</button>
+    <!-- <button class="active">按钮</button>
     <button>按钮</button>
     <button>按钮</button>
-    <button>按钮</button>
+    <button>按钮</button> -->
+
+    <ul>
+        <li><button>按钮1</button></li>
+        <li><button>按钮2</button></li>
+        <li><button>按钮3</button></li>
+        <li><button>按钮4</button></li>
+        <li><button>按钮5</button></li>
+    </ul>
 
     <script>
+
+        const item = document.querySelectorAll('button')
+        for (var i = 0; i < item.length; i++) {
+            ;((index) => {
+                item[i].addEventListener('click', e => {
+                    console.log(index)
+                })
+            })(i)
+        }
         
         //const btns = document.querySelectorAll('button')
         // 方式一 for循环的方式
@@ -32,14 +49,15 @@
         //     })
         // }
 
+       
         // 方式二 事件委托的方式
-        const body = document.body
-        body.addEventListener('click', e => {
-            if (e.target.tagName === 'BUTTON') {
-                document.querySelector('.active').classList.remove('active')
-                e.target.classList.add('active')
-            }
-        })
+        // const body = document.body
+        // body.addEventListener('click', e => {
+        //     if (e.target.tagName === 'BUTTON') {
+        //         document.querySelector('.active').classList.remove('active')
+        //         e.target.classList.add('active')
+        //     }
+        // })
 
 
         

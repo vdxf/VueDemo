@@ -45,6 +45,12 @@ const router = createRouter({
       name: 'ImageDetail',
       component: () => import('@/views/ImageDetail.vue'),
       meta: { title: '相片详情' }
+    },
+    {
+      path: '/:pathMatch(.*)',
+      name: 'error',
+      component: () => import('@/views/NotFount.vue'),
+      meta: { title: '404' }
     }
   ]
 })

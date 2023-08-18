@@ -109,17 +109,25 @@ const handleSearch = () => {
 }
 const handleUpdataImage = (item: any) => {
   const data = toRaw(item)
+  console.log(data)
   router.push({
     path: '/imagecreate',
-    state: {
-      data
+    query: {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      type: data.type,
+      fileId: data.file.id,
+      imgUrl: data.file.filepath
     }
   })
 }
 const handleImageDetail = (id: any) => {
   router.push({
     path: '/imagedetail',
-    state: { id }
+    query: {
+      id
+    }
   })
 }
 const handleDeleteImage = (id: any) => {

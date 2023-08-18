@@ -4,13 +4,16 @@
     <van-tabbar v-model="active">
       <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item replace to="/user" icon="friends-o">用户</van-tabbar-item>
-      <router-link class="image-add" to="/imagecreate">+</router-link>
+      <router-link class="image-add" to="/imagecreate" v-if="route.path === '/home'">+</router-link>
     </van-tabbar>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 const active = ref(0)
 </script>
 

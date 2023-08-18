@@ -125,7 +125,6 @@ import {
   doUserDetails,
   doUserList
 } from '@/api'
-import { Loading } from 'vant'
 import { ref, toRaw } from 'vue'
 
 const nickname = ref('')
@@ -189,10 +188,6 @@ const handleUpdateUser = () => {
     .catch((error) => {
       alert(error.response.data.msg)
     })
-    .finally(() => {
-      console.log('************************')
-      console.log(sex.value)
-    })
 }
 //用户列表
 const handleUserList = () => {
@@ -224,6 +219,7 @@ const handleUpdatePassword = () => {
 const handleUpdate = () => {
   doUpdatePassword({ oldPassword: oldPassword.value, password: password.value })
     .then((result) => {
+      console.log(result)
       isUpdatePassword.value = false
     })
     .catch((error) => {

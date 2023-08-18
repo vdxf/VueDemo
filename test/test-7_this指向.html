@@ -9,6 +9,8 @@
     <script>
         var name = 'window' // name存放在window对象中
 
+
+
         // 第一题
 
         // 定义一个对象
@@ -139,7 +141,7 @@
         var person2 = new Person('person2')
 
         //1
-        person1.obj.foo1()() // window
+        person1.obj.foo1()()
         //2
         person1.obj.foo1.call(person2)() // window
         //3
