@@ -109,7 +109,6 @@ const handleSearch = () => {
 }
 const handleUpdataImage = (item: any) => {
   const data = toRaw(item)
-  console.log(data)
   router.push({
     path: '/imagecreate',
     query: {
