@@ -27,7 +27,7 @@ ajax.interceptors.response.use(
   },
   (error) => {
     console.log('请求响应错误 => ', error.response, error)
-    alert(error.data.msg)
+    alert(error.data)
     return Promise.reject(error)
   }
 )

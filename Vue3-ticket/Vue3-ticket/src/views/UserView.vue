@@ -1,6 +1,24 @@
 <template>
   <div class="c-view">
     <div class="c-card">
+      <ul class="user-content">
+        <li>
+          <span>用户头像</span>
+          <img :src="avatarUrl" wr="10" alt="img" class="user-avatar" />
+        </li>
+        <li>
+          <span>用户昵称</span>
+          <P>{{ collectInfo.nickname }}</P>
+        </li>
+        <li>
+          <span>个性签名</span>
+          <P>{{ collectInfo.signature }}</P>
+        </li>
+        <li>
+          <span>邮箱</span>
+          <P>{{ collectInfo.email }}</P>
+        </li>
+      </ul>
       <div class="header-content">
         <button @click="handleCollectList">我的收藏</button>
         <button @click="handleUpdateUserInformation">更新用户信息</button>
@@ -10,22 +28,27 @@
       </div>
 
       <!--      我的收藏-->
-      <div class="popup-view" v-show="isCollectList" @click="isCollectList = false">
-        <div class="content" @click.stop="$emit('null')">
-          <ul class="userlist" v-if="UserList.nickname">
-            <li v-for="userObj in UserList" :key="userObj.id">
-              <p>用户名：{{ userObj.nickname }}</p>
-              <p>性别：{{ userObj.sex }}</p>
-              <p>个性签名：{{ userObj.signature }}</p>
-              <p>邮箱：{{ userObj.email }}</p>
-              <p>用户ID：{{ userObj.id }}</p>
-              <p>用户创建时间：{{ userObj.createdAt }}</p>
-              <p>用户最近上线时间：{{ userObj.updatedAt }}</p>
-            </li>
-          </ul>
-          <div v-else>收藏为空</div>
-        </div>
-      </div>
+      <van-pull-refresh
+        class="popup-view"
+        v-show="isCollectList"
+        v-model="refreshing"
+        @refresh="handleRefresh"
+      >
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          v-model:error="error"
+          error-text="请求失败，点击重新加载"
+          @load="handleLoad"
+        >
+          <span>收藏数：{{ collectCount }}</span>
+          <van-cell v-for="item in collectList" :key="item.id">
+            <vs-image :src="item.picture.file.filepath" wr="300" alt="img" />
+          </van-cell>
+        </van-list>
+        <div @click.stop="isCollectList = false" class="colse-collect">关闭</div>
+      </van-pull-refresh>
 
       <!--      更新用户信息-->
       <div class="popup-view" v-show="isInformation" @click="isInformation = false">
@@ -33,7 +56,7 @@
           <h1>更新用户信息</h1>
           <label class="choose-image">
             <p>选择头像:</p>
-            <img :src="imgUrl" alt="img" v-if="imgUrl" />
+            <vs-image :src="imgUrl" alt="img" v-if="imgUrl" />
             <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
             <input type="file" @change="handleAvatarId" style="opacity: 0" />
           </label>
@@ -58,34 +81,26 @@
       <div class="popup-view" v-show="isUserList" @click="isUserList = false">
         <div class="content" @click.stop="$emit('null')">
           <ul class="userlist">
-            <li v-for="userObj in UserList" :key="userObj.id">
-              <p>用户名：{{ userObj.nickname }}</p>
-              <p>性别：{{ userObj.sex }}</p>
-              <p>个性签名：{{ userObj.signature }}</p>
-              <p>邮箱：{{ userObj.email }}</p>
-              <p>用户ID：{{ userObj.id }}</p>
-              <p>用户创建时间：{{ userObj.createdAt }}</p>
-              <p>用户最近上线时间：{{ userObj.updatedAt }}</p>
+            <li v-for="(item, index) in UserListInfo" :key="index" class="user-item">
+              <p>用户{{ index + 1 }}： {{ item.nickname }}</p>
+              <button @click="handleUserDetails(item.id)">用户详情</button>
             </li>
           </ul>
-          <button @click="handleUserDetails">用户详情</button>
         </div>
       </div>
 
       <!--        用户详情-->
       <div class="popup-view" v-show="isUserDetails" @click="isUserDetails = false">
         <div class="content" @click.stop="$emit('null')">
-          <ul class="userlist">
-            <li v-for="userObj in UserList" :key="userObj.id">
-              <p>用户名：{{ userObj.nickname }}</p>
-              <p>性别：{{ userObj.sex }}</p>
-              <p>个性签名：{{ userObj.signature }}</p>
-              <p>邮箱：{{ userObj.email }}</p>
-              <p>用户ID：{{ userObj.id }}</p>
-              <p>用户创建时间：{{ userObj.createdAt }}</p>
-              <p>用户最近上线时间：{{ userObj.updatedAt }}</p>
-            </li>
-          </ul>
+          <div class="userlist">
+            <p>用户名：{{ UserDetail.nickname }}</p>
+            <p>性别：{{ UserDetail.sex }}</p>
+            <p>个性签名：{{ UserDetail.signature }}</p>
+            <p>邮箱：{{ UserDetail.email }}</p>
+            <p>用户ID：{{ UserDetail.id }}</p>
+            <p>用户创建时间：{{ UserDetail.createdAt }}</p>
+            <p>用户最近上线时间：{{ UserDetail.updatedAt }}</p>
+          </div>
         </div>
       </div>
 
@@ -122,18 +137,23 @@ import {
   doResetPassword,
   doUpdatePassword,
   doUpdateUserInformation,
-  doUserDetails,
-  doUserList
+  doUserList,
+  doUserDetails
 } from '@/api'
-import { ref, toRaw } from 'vue'
+import { onBeforeMount, ref, toRaw } from 'vue'
 
 const nickname = ref('')
 const signature = ref('')
-const sex = ref('')
+const sex = ref<string>('')
 const avatarId = ref('')
 const imgUrl = ref('')
+const avatarUrl = ref('')
 const files = ref('')
-const UserList = ref<any>('')
+const collectCount = ref()
+const collectList = ref<any>('')
+const collectInfo = ref<any>('')
+const UserListInfo = ref<any>('')
+const UserDetail = ref<any>('')
 const oldPassword = ref('')
 const password = ref('')
 const email = ref('2532499815@qq.com')
@@ -142,25 +162,52 @@ const resetPassword = ref('')
 const isCollectList = ref(false)
 const isInformation = ref(false)
 const isUserList = ref(false)
-const isUserDetails = ref(false)
 const isUpdatePassword = ref(false)
 const isResetPassword = ref(false)
-
+const isUserDetails = ref(false)
+const refreshing = ref(false)
+const loading = ref(false)
+const finished = ref(false)
+const error = ref(false)
+let current1 = 0
+// 我的收藏
 const handleCollectList = () => {
   isCollectList.value = true
-  doCollectList(true)
+  handleRefresh()
+}
+const handleRefresh = () => {
+  reqDataList(1)
+}
+const handleLoad = () => {
+  reqDataList(current1 + 1)
+}
+const reqDataList = (current: number) => {
+  doCollectList({
+    current: current,
+    length: 10
+  })
     .then((result) => {
-      console.log(result)
-      UserList.value = result
+      const { list, count } = result
+      collectCount.value = count
+      collectList.value = current === 1 ? list : [...collectList.value, ...list]
+      finished.value = collectList.value.length >= count
+      collectInfo.value = toRaw(collectList.value)[0].user
+      avatarUrl.value = 'https://img.daysnap.cn/' + collectInfo.value.avatar.filepath
     })
     .catch((error) => {
+      error.value = true
       alert(error.data.msg)
+    })
+    .finally(() => {
+      loading.value = false
+      refreshing.value = false
     })
 }
 //更新用户信息
 const handleUpdateUserInformation = () => {
   isInformation.value = true
 }
+//选择头像
 const handleAvatarId = (event: any) => {
   files.value = event.target.files
   let formData = new FormData()
@@ -171,45 +218,52 @@ const handleAvatarId = (event: any) => {
       imgUrl.value = 'https://img.daysnap.cn/' + result.filepath
     })
     .catch((error) => {
-      alert(error.response.data.msg)
+      alert(error.data.msg)
     })
 }
+//提交更新
 const handleUpdateUser = () => {
+  let sexStr = sex.value + ''
   doUpdateUserInformation({
     nickname: nickname.value,
     signature: signature.value,
-    sex: sex.value,
+    sex: sexStr,
     avatarId: avatarId.value
   })
     .then((result) => {
       isInformation.value = false
+      avatarUrl.value = imgUrl.value
+      reqDataList(1)
       console.log(result)
     })
     .catch((error) => {
-      alert(error.response.data.msg)
+      alert(error.data.msg)
     })
 }
 //用户列表
 const handleUserList = () => {
   isUserList.value = true
-  doUserList(true)
+  doUserList({
+    current: 1,
+    length: 10
+  })
     .then((result) => {
-      UserList.value = result.list
+      UserListInfo.value = result.list
+      console.log('UserListInfo.value =>', UserListInfo.value)
     })
     .catch((error) => {
-      alert(error.response.data.msg)
+      alert(error.data.msg)
     })
 }
 // 用户详情
-const handleUserDetails = () => {
-  isUserDetails.value = true
-  let userId = toRaw(UserList.value)[0].id
-  doUserDetails(userId)
+const handleUserDetails = (id: any) => {
+  doUserDetails(id)
     .then((result) => {
-      console.log(result)
+      isUserDetails.value = true
+      UserDetail.value = result
     })
     .catch((error) => {
-      alert(error.response.data.msg)
+      console.dir(error)
     })
 }
 // 修改密码
@@ -257,6 +311,9 @@ const handleReset = () => {
       console.dir(error)
     })
 }
+onBeforeMount(() => {
+  reqDataList(1)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -288,9 +345,14 @@ const handleReset = () => {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: j(50);
   background-color: #ddd;
   padding: j(20);
+  flex: 1;
+  overflow-y: auto;
+  span {
+    font-size: j(14);
+  }
 }
 
 .content {
@@ -342,11 +404,10 @@ const handleReset = () => {
 }
 
 .userlist {
+  display: flex;
+  flex-direction: column;
   p {
     margin: j(20) 0;
-  }
-  button {
-    margin-top: j(40);
   }
 }
 
@@ -446,6 +507,46 @@ const handleReset = () => {
     width: j(80);
     height: j(80);
     margin-left: j(20);
+  }
+}
+.colse-collect {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: j(20);
+  width: j(100);
+  height: j(50);
+  background-color: #fff;
+  border-radius: j(10);
+}
+.user-avatar {
+  display: block;
+  width: j(50);
+  height: j(50);
+}
+.user-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  li {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: j(20);
+  }
+}
+.user-item {
+  display: flex;
+  flex-direction: row;
+  button {
+    margin-left: j(40);
+    border: none;
+    border-radius: j(2);
+    background-color: #fff;
+    color: #333;
   }
 }
 </style>

@@ -81,10 +81,11 @@ export const doDetail = withLoading((id) => {
 })
 
 // 我的收藏
-export const doCollectList = withLoading(() => {
+export const doCollectList = withLoading((data) => {
   return request({
-    url: `/api/v1/collect?current=1&length=10`,
-    method: 'GET'
+    url: `/api/v1/collect`,
+    method: 'GET',
+    params: data
   })
 })
 
@@ -98,20 +99,21 @@ export const doUpdateUserInformation = withLoading((data) => {
 })
 
 //用户列表
-export const doUserList = withLoading(() => {
+export const doUserList = withLoading((data) => {
   return request({
-    url: `/api/v1/user?current=1&length=10`,
-    method: 'GET'
+    url: `/api/v1/user`,
+    method: 'GET',
+    params: data
   })
 })
 
 //用户详情
-export const doUserDetails = withLoading((id: any) => {
+export const doUserDetails = (id) => {
   return request({
     url: `/api/v1/user/${id}`,
     method: 'GET'
   })
-})
+}
 
 //修改密码
 export const doUpdatePassword = (data) => {

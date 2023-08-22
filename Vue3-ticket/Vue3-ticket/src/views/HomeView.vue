@@ -34,13 +34,24 @@
         error-text="请求失败，点击重新加载"
         @load="handleLoad"
       >
-        <van-cell v-for="item in list" :key="item.id" @click="handleImageDetail(item.id)">
+        <van-cell v-for="(item, index) in list" :key="item.id" @click="handleImageDetail(item.id)">
           <div class="image-detail">
             <vs-image :src="item.file.filepath" wr="200" alt="img" />
             <div class="detail-content">
               <span>{{ item.title }}</span>
               <span>{{ item.updatedAt }}</span>
               <span>{{ item.description }}</span>
+              <div class="image-operate">
+                <div @click.stop="handleLike(item.id, item.isLike)" class="image-like">
+                  <i v-if="item.isLike">取消点赞</i>
+                  <i v-else>点赞</i>
+                  <span>{{ item.likeCount }}</span>
+                </div>
+                <div @click.stop="handleCollect(item.id, item.isCollect)" class="image-collect">
+                  <i v-if="item.isCollect">取消收藏</i>
+                  <i v-else>收藏</i>
+                </div>
+              </div>
             </div>
           </div>
           <div class="image-button-group">
@@ -55,8 +66,15 @@
 
 <script setup lang="ts">
 import { ref, toRaw, watch } from 'vue'
-import { showConfirmDialog } from 'vant'
-import { doDelete, doTabulation } from '@/api/index'
+import { showConfirmDialog, showSuccessToast, showFailToast } from 'vant'
+import {
+  doCancelCollect,
+  doCancellike,
+  doCollect,
+  doDelete,
+  doLike,
+  doTabulation
+} from '@/api/index'
 import VsImage from '@/components/VsImage.vue'
 import { useRouter } from 'vue-router'
 
@@ -71,6 +89,62 @@ const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
 const view = ref()
+// 点赞
+const handleLike = (id: any, isLike: any) => {
+  if (!isLike) {
+    doLike({
+      pictureId: id
+    })
+      .then((result) => {
+        handleRefresh()
+        showSuccessToast('点赞成功')
+        console.log(result)
+      })
+      .catch((error) => {
+        showFailToast('点赞失败')
+        console.dir(error)
+      })
+  } else {
+    doCancellike({
+      pictureId: id
+    })
+      .then((result) => {
+        handleRefresh()
+        console.log(result)
+      })
+      .catch((error) => {
+        console.dir(error)
+      })
+  }
+}
+// 收藏
+const handleCollect = (id: any, isCollect: any) => {
+  if (!isCollect) {
+    doCollect({
+      pictureId: id
+    })
+      .then((result) => {
+        handleRefresh()
+        showSuccessToast('收藏成功')
+        console.log(result)
+      })
+      .catch((error) => {
+        showFailToast('收藏失败')
+        console.dir(error)
+      })
+  } else {
+    doCancelCollect({
+      pictureId: id
+    })
+      .then((result) => {
+        handleRefresh()
+        console.log(result)
+      })
+      .catch((error) => {
+        console.dir(error)
+      })
+  }
+}
 const reqDataList = (current: number) => {
   doTabulation({
     current: current,
@@ -90,7 +164,6 @@ const reqDataList = (current: number) => {
     .finally(() => {
       loading.value = false
       refreshing.value = false
-      view.value.$el.scrollTop = 0
     })
 }
 const handleExit = () => {
@@ -99,6 +172,7 @@ const handleExit = () => {
 }
 const handleRefresh = () => {
   reqDataList(1)
+  view.value.$el.scrollTop = 0
 }
 const handleLoad = () => {
   reqDataList(current1 + 1)
@@ -262,9 +336,6 @@ watch(keyword, (nv) => {
 
   span {
     font-size: j(16);
-    line-height: j(32);
-    text-align: right;
-    margin-bottom: j(10);
   }
 }
 
@@ -296,5 +367,39 @@ watch(keyword, (nv) => {
   border-radius: j(4);
   background-color: red;
   color: #fff;
+}
+.image-operate {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.image-like {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background-color: #ff6d72;
+  color: #fff;
+  border: none;
+  border-radius: j(8);
+  width: j(80);
+  height: j(20);
+  line-height: j(20);
+  margin-right: j(40);
+  span {
+    color: #000;
+    position: absolute;
+    right: j(-20);
+  }
+}
+.image-collect {
+  display: flex;
+  justify-content: center;
+  background-color: #ff6d72;
+  color: #fff;
+  border: none;
+  border-radius: j(8);
+  width: j(80);
+  height: j(20);
+  line-height: j(20);
 }
 </style>
