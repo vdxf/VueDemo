@@ -4,41 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        img {
+            display: block;
+            margin-bottom: 100px;
+            width: 800px;
+            height: 800px;
+        }
+    </style>
 </head>
 <body>
-    <h1>性能优化案例</h1>
-    <img class="img1" src="" alt="" width="960">
-    <div class="img-con">
-        <img class="img2" src="" alt="" height="540">
-    </div>
-    <button class="btn1">请求图片</button>
-    <script>
-        let btn1 = document.querySelector('.btn1')
-        btn1.onclick = function () {
-            let myImage = ( function () {
-                let imgNode = document.querySelector('.img2')
-                return {
-                    setSrc: function (src) {
-                        imgNode.src = src
-                    }
+    <img src="./images/b01.jpg" alt="">
+      <script>
+          const imgArr = [
+            "./images/b02.jpg",
+            "./images/b03.jpg",
+            "./images/b04.jpg",
+            "./images/b05.jpg",
+            "./images/b06.jpg",
+            "./images/b07.jpg",
+            "./images/b08.jpg",
+            "./images/b09.jpg",
+          ]
+          let n = 0 
+          const img = document.querySelector('img')
+          img.addEventListener('click', () => {
+            if (n < imgArr.length) {
+                img.src = imgArr[n]
+                n++
+                if (n < imgArr.length) {
+                    preLoad(imgArr[n]).then(data => {
+                        console.log(data)
+                    })
                 }
-            } ) ()
+            } else {
+                console.log('已经是最后一张了')
+            }
+          })
 
-            let proxyImage = ( function () {
-                let img = new Image
-                img.onload = function () {
-                    myImage.setSrc(this.src)
-                }
-                return {
-                    setSrc: function (src) {
-                        myImage.setSrc('./images/Spinner-1s-200px.svg')
-                        img.src = src
-                    }
-                }
-            } ) ()
+          preLoad(imgArr[0]).then(data => {
+            console.log(data)
+          }).catch(err => {
+            console.log(err)
+          })
 
-            proxyImage.setSrc('./images/login.png')
-        }
+          function preLoad(src) {
+            return new Promise((resolve, reject) => {
+                const newImg = new Image()
+                newImg.src = src
+                newImg.addEventListener('load', () => resolve(img))
+                newImg.addEventListener('error', () => reject())
+            })
+          }
     </script>
 </body>
 </html>

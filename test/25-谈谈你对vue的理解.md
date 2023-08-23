@@ -517,3 +517,38 @@ Watcher 创建好后，vue 会使用代理模式，将计算属性挂载到组�
 当计算属性的依赖变化时，会先触发计算属性的 Watcher 执行，此时，它只需设置 dirty 为 true 即可，不做任何处理。
 由于依赖同时会收集到组件的 Watcher，因此组件会重新渲染，而重新渲染时又读取到了计算属性，由于计算属性目前已为 dirty，因此会重新运行 getter 进行运算
 而对于计算属性的 setter，则极其简单，当设置计算属性时，直接运行 setter 即可。
+
+## Proxy 相比 defineProperty 的优势在哪里
+
+Vue3.x 改用 Proxy 替代 Object.defineProperty
+原因在于 Object.defineProperty 本身存在的一些问题：
+  1、Object.defineProperty 只能劫持对象属性的 getter 和 setter 方法。
+  2、Object.definedProperty 不支持数组(可以监听数组,不过数组方法无法监听自己重写)，更准确的说是不支持数组的各种 API。所以 Vue 重写了数组方法
+
+Proxy 的优点在于：
+  Proxy 可以直接监听对象而非属性；
+  Proxy 可以直接监听数组的变化；
+  Proxy 有多达 13 种拦截方法,不限于 apply、ownKeys、deleteProperty、has 等等是 Object.defineProperty 不具备的；
+  Proxy 返回的是一个新对象,我们可以只操作新的对象达到目的,而 Object.defineProperty 只能遍历对象属性直接修改；
+  Proxy 作为新标准将受到浏览器厂商重点持续的性能优化，也就是传说中的新标准的性能红利；
+
+## watch 与 computed 的区别
+
+相同：都是观察数据变化的
+
+区别：
+  1、computed是计算属性；watch是监听，监听data中的数据变化。
+  2、computed支持缓存，当其依赖的属性的值发生变化时，计算属性会重新计算，反之，则使用缓存中的属性值；watch不支持缓存，当对应属性发生变化的时候，响应执行。
+  3、computed不支持异步，有异步操作时无法监听数据变化；watch支持异步操作。
+  4、computed第一次加载时就监听；watch默认第一次加载时不监听。
+    immediate: true,第一次加载时监听（默认为false）
+    deep 深度监听，监听的属性是对象的话 不开启deep 对象子属性变化不会触发watch。开启了deep 对象内部所有子属性变化 都会触发watch
+  5、computed中的函数必须调用return；watch不是。
+  6、使用场景：
+  computed：一个属性受到多个属性影响，如：购物车商品结算。
+  watch：一个数据影响多条数据，如：搜索数据。
+  数据变化响应，执行异步操作，或高性能消耗的操作，watch为最佳选择。
+
+computed 缓存原理：
+conputed本质是一个惰性的观察者；当计算数据存在于 data 或者 props里时会被警告；
+vue 初次运行会对 computed 属性做初始化处理（initComputed），初始化的时候会对每一个 computed 属性用 watcher 包装起来 ，这里面会生成一个 dirty 属性值为 true；然后执行 defineComputed 函数来计算，计算之后会将 dirty 值变为 false，这里会根据 dirty 值来判断是否需要重新计算；如果属性依赖的数据发生变化，computed 的 watcher 会把 dirty 变为 true，这样就会重新计算 computed 属性的值。

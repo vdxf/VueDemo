@@ -7,37 +7,41 @@
     <style>
         img {
             display: block;
+            margin-bottom: 100px;
             width: 800px;
             height: 800px;
         }
     </style>
 </head>
 <body>
-    <img src="./images/Spinner-1s-200px.svg" data-src="./images/1.webp" alt="">
-    <img src="./images/Spinner-1s-200px.svg" data-src="./images/2.webp" alt="">
-    <img src="./images/Spinner-1s-200px.svg" data-src="./images/3.webp" alt="">
-    <img src="./images/Spinner-1s-200px.svg" data-src="./images/4.webp" alt="">
-    <img src="./images/Spinner-1s-200px.svg" data-src="./images/5.webp" alt="">
-    <img src="./images/Spinner-1s-200px.svg" data-src="./images/6.webp" alt="">
-    <input type="file">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b01.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b02.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b03.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b04.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b05.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b06.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b07.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b08.jpg" alt="">
+    <img src="./images/Spinner-1s-200px.svg" data-src="./images/b09.jpg" alt="">
     <script>
-        let num = document.getElementsByTagName('img').length
-        let img = document.getElementsByTagName('img')
-        let n = 0
+        let imgArr = document.querySelectorAll('img')
 
-        lazyload()
+        let n = 0 // 防止加载过的图片重复加载
 
-        window.onscroll = lazyload
+        lozyLoad()
 
-        function lazyload() {
-            let seeHeight = document.documentElement.clientHeight
-            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        window.onscroll = lozyLoad
 
-            for ( let i = n; i < num; i++ ) {
-                if ( img[i].offsetTop < seeHeight + scrollTop ) {
-                    img[i].src = img[i].getAttribute('data-src')
+        function lozyLoad() {
+            let clientHeight = document.documentElement.clientHeight // 网页可见区域的高度
+
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop // 网页被卷去的内容的高度
+
+            for (let i = n; i < imgArr.length; i++) {
+                if (imgArr[i].offsetTop < scrollTop + clientHeight) {
+                    imgArr[i].src = imgArr[i].getAttribute('data-src')
                     n = i + 1
-                }
+                } 
             }
         }
     </script>
