@@ -131,35 +131,50 @@
         // console.log(obj)
         // console.log([1, 23] instanceof Object)
 
-        // const oldObj = {
-        //     uname: 'qewf',
-        //     age: 18,
-        //     hobby: ['asd', 'dgg'],
-        //     family: {
-        //         A: 123,
-        //         B: 456,
-        //         C: 789
-        //     }
-        // } 
+        const oldObj = {
+            uname: 'qewf',
+            name: '',
+            age: 18,
+            hobby: ['asd', 'dgg'],
+            hobby1: [],
+            family: {
+                A: 123,
+                B: 456,
+                C: 789
+            },
+            familys: {}
+        } 
 
-        // const newObj = {}
+        const newObj = {}
 
-        // function deepCopy(newObj, oldObj) {
-        //     for (let k in oldObj) {
-        //         if (oldObj[k] instanceof Array) {
-        //             newObj[k] = []
-        //             deepCopy(newObj[k], oldObj[k])
-        //         } else if (oldObj[k] instanceof Object) {
-        //             newObj[k] = {}
-        //             deepCopy(newObj[k], oldObj[k])
-        //         } else {
-        //             newObj[k] = oldObj[k]
-        //         }
-        //     }
-        // }
+        function deepCopy(newObj, oldObj) {
+            for (let k in oldObj) {
+                if (oldObj[k] instanceof Array) {
+                    if (oldObj[k].length === 0) {
+                        delete oldObj[k]
+                    } else {
+                        newObj[k] = []
+                        deepCopy(newObj[k], oldObj[k])
+                    }
+                } else if (oldObj[k] instanceof Object) {
+                    if (JSON.stringify(oldObj[k]) === '{}') {
+                        delete oldObj[k]
+                    } else {
+                        newObj[k] = {}
+                        deepCopy(newObj[k], oldObj[k])
+                    }
+                } else {
+                    if (oldObj[k] === '') {
+                        delete oldObj[k]
+                    } else {
+                        newObj[k] = oldObj[k]
+                    }
+                }
+            }
+        }
 
-        // deepCopy(newObj, oldObj)
-        // console.log(newObj)
+        deepCopy(newObj, oldObj)
+        console.log(newObj)
     </script>
 </body>
 </html>
