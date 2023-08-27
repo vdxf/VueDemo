@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const head = [1, 2, 3, 4, 5]
+    var reverseList = function(head) {
+      let next = null;    // 临时变量，存储每个节点的指向
+      let newHead = null;    // 临时变量，存储前一个节点
+      while(head) {    // 当前节点为空时退出循环
+        next = head.next;    // 将下一个节点的指向存下来
+        head.next = newHead;    // 将下一个节点指向前一个节点
+
+        newHead = head;    // 将当前节点变为前一个节点
+        head = next;    // 将下一个节点变为当前节点，开始新一轮的循环
+      }
+      return newHead;    // 最后，输出前一个节点，就会倒着将所有节点输出了
+    }
+    const res = reverseList(head)
+    console.log(res)
+  </script>
+</body>
+</html>

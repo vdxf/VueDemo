@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 本题的关键是打印每个圈的每个部分时,判断是否能够打印
+从左到右: 不需要判断
+从上到下: 至少两行
+从右向左:至少两行两列
+从下到上: 至少三行两列
+
+圈数: start*2<行和列 -->
+  <script>
+    const matrix = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]
+
+    var spiralOrder = function(matrix) {
+      // 矩阵的行数
+      var rows = matrix.length;
+      // 最终遍历的结果
+      var result = [];
+      if(matrix.length !=0){
+        // 矩阵的列数
+        var columns = matrix[0].length;
+        // 矩阵元素的个数
+        var matrixLength = rows*columns;
+        printByCircle(matrix,result,rows,columns,0,0,matrixLength);
+      }
+      return result;
+    };
+    /**
+     *  printByCircle()的参数分别是矩阵、遍历结果、未遍历的矩阵的最大行，未遍历的矩阵的最大列，未遍历的矩阵
+     *  的开始元素行下标和列下标，未遍历的元素个数
+     *	如果未遍历的元素个数为0，则意味着遍历结束，通常遍历结束是在遍历某行或列之前。
+    */
+    var printByCircle = function(matrix,result,rows,columns,row,column,matrixLength){  
+      if(matrixLength <= 0){
+          return ;
+      }
+      // 从左往右打印一行
+      for(var j=column;j<columns;j++){
+          result.push(matrix[row][j]);
+          matrixLength--;
+      }
+      // 从上往下打印一列
+      if(matrixLength <= 0){
+          return ;
+      }
+      for(var i=row+1;i<rows;i++){
+          result.push(matrix[i][columns-1]);
+          matrixLength--;
+      }
+      // 从右往左打印一行
+      if(matrixLength <= 0){
+          return ;
+      }
+      for(var j=columns-2;j>column-1;j--){
+          result.push(matrix[rows-1][j]);
+          matrixLength--;
+      }
+      // 从下往上打印一列
+      if(matrixLength <= 0){
+          return ;
+      }
+      for(var i=rows-2;i>row;i--){
+          result.push(matrix[i][column]);
+          matrixLength--;
+      }
+      printByCircle(matrix,result,rows-1,columns-1,row+1,column+1,matrixLength);
+    }
+
+    spiralOrder(matrix)
+  </script>
+</body>
+</html>
