@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 数组扁平化，就是在遇到多层数组时，我们需要把数组的每一层分解出来，成为返回的新数组内的每个元素。
+  flat，是官方提供的一个api，可以分解数组想要的层数，接受一个参数，参数是多少，那么就是分解多少层，参数为 Infinity 时，就是分解所有层 -->
+  <script>
+    // let arr = [1,2,[3,4,[5,[6]]]]
+    // let newArr1 = arr.flat(1) //分解元素为数组的最外一层
+    // let newArr2 = arr.flat(Infinity)
+    // console.log(newArr1); //[ 1, 2, 3, 4, [ 5, [6] ] ]
+    // console.log(newArr2); //[ 1, 2, 3, 4, 5, 6 ]
+
+    // 手写flat
+    let arr = [1, 2, [3, 4, [5, [6]]]]
+
+    Array.prototype.myflat = function (n) {
+      let res = []
+      for (let i = 0; i < this.length; i++) {
+        if (Array.isArray(this[i]) && n > 0) {
+          res = res.concat(this[i].myflat(n - 1))
+        } else {
+          res.push(this[i])
+        }
+      }
+      return res
+    }
+
+    console.log(arr.myflat(1)) // [1, 2, 3, 4, [5, [6]]]
+  </script>
+</body>
+</html>
