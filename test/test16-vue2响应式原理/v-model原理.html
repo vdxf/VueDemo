@@ -9,7 +9,7 @@
 <body>
   <h2>v-model原理</h2>
   <!-- 双向数据绑定 -->
-  <input placeholder="请输入名字" id="userName">
+  <!-- <input placeholder="请输入名字" id="userName">
   显示值：<p id="uName"></p>
   <script>
     let obj = {}
@@ -24,7 +24,28 @@
     })
     document.getElementById("userName").addEventListener('keyup', function () {
       obj.name = event.target.value
-    })
+    }) -->
+
+
+    <input type="text" placeholder="请输入名字" id="username">
+    显示值：<p id="uName"></p>
+
+    <script>
+      let obj = {}
+      Object.defineProperty(obj, 'name', {
+        get: function (val) {
+          console.log('取值', val)
+        },
+        set: function (val) {
+          console.log('设置值')
+          document.querySelector('#uName').innerHTML = val
+        }
+      })
+      document.querySelector('#username').addEventListener('keyup', e => {
+        obj.name = e.target.value
+      })
+
+    </script>
   </script>
 
 
