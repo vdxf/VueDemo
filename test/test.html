@@ -55,17 +55,126 @@
 // quickSort(arr, 0, arr.length-1);
 // console.log(arr); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-let arr = [1, 7, 9, 8, 3, 2, 6, 0, 5, 4];
-let n = arr.length
-for (let i = 0; i < n; i++) {
-  let index = i
-  for (let j = i + 1; j < n; j++) {
-    if (arr[index] > arr[j]) 
-    [arr[j], arr[index]] = [arr[index], arr[j]]
-  }
+// let arr = [1, 7, 9, 8, 3, 2, 6, 0, 5, 4];
+// let n = arr.length
+// for (let i = 0; i < n; i++) {
+//   let index = i
+//   for (let j = i + 1; j < n; j++) {
+//     if (arr[index] > arr[j]) 
+//     [arr[j], arr[index]] = [arr[index], arr[j]]
+//   }
+// }
+// console.log(arr)
+//  // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// Function.prototype.mycall = function(thisArg, ...arg) {
+// 	const MYCALL = Symbol('mysymbol')
+// 	thisArg.__proto__[MYCALL] = this
+// 	thisArg[MYCALL](...arg)
+// 	delete this.__proto__[MYCALL]
+// }
+
+// function test(name, age) {
+// 	console.log(this)
+// 	console.log(`my name is ${name}, and I ${age} years old`)
+// }
+
+// const obj = {
+// 	name: '张三',
+// 	age: 18 
+// }
+
+// test.mycall(obj, obj.name, obj.age)
+// test.call(obj, obj.name, obj.age)
+
+// Function.prototype.mybind = function(thisArg, ...arg) {
+// 	const MYBIND = Symbol('mybind')
+// 	thisArg.__proto__[MYBIND] = this
+// 	return (...arg2)=>{
+// 		thisArg[MYBIND](...arg, ...arg2)
+// 		delete thisArg.__proto__[MYBIND]
+// 	}
+// }
+
+// function test(name, age, food, drink) {
+// 	console.log(this)
+// 	console.log(`my name is ${name}, and I ${age} years old`)
+// 	console.log(`FavoriteFood：${food}, favoriteDrink：${drink}`)
+// }
+
+// const obj = {
+// 	name: '张三',
+// 	age: 18 
+// }
+
+// test.mybind(obj, obj.name, obj.age)(['a', 'b'], 'c')
+// test.bind(obj, obj.name, obj.age)(['d', 'e'], 'f')
+
+// const curring = function(fn) {
+//     const args = []
+//     return function result(...rest) {
+//         if (rest.length === 0) {
+//             return fn(...args)
+//         } else {
+//             args.push(...rest)
+//             return result;
+//         }
+//     }
+// }
+// const sum = (...arg) => {
+//     return arg.reduce((pre,cur) => {
+//         return pre + cur
+//     },0)
+// }
+
+// const res = curring(sum)(1)(2,5)(3)()
+// console.log(res)
+
+// Array.prototype.reduce = function (fn,p) {
+//     let arr = this
+//     let res = p || arr[0]
+
+//     for(let i= p?0:1;i<arr.length;i++){
+//         res = fn(res,arr[i],i,arr)
+//     }
+
+//     return res
+// }
+
+// let arr = [1,2,3,4,5,6]
+
+// let res1 = arr.reduce((pre,item,index,arr)=>{
+//     return pre+item
+// },0)
+
+// console.log(res1)
+// const arr1 = [2, 5, 1, 12, 23, 54]
+// Array.prototype.mySort = function (fn) {
+//             if (!fn) return 
+
+//             for ( let i = 0; i < this.length; i++ ) {
+//                 for (let j = 0; j < this.length - i - 1; j++ ) {
+//                     if (fn(this[j], this[j + 1]) > 0) {
+//                         [this[j], arr1[j + 1]] = [this[j + 1], this[j]]
+//                     }
+//                 }
+//             }
+//         }
+//         arr1.mySort(function (a, b) {
+//             return a - b
+//         })
+//         console.log(arr1)
+Array.prototype.myForEach = function (fn) {
+    for (let i = 0; i < this.length; i++) {
+        fn (this[i], i, this)
+    }
 }
-console.log(arr)
- // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+const arr = [2, 5, 1, 12, 23, 54]
+arr.myForEach(function (item, index, array) {
+    if ( item % 2 === 0 ) {
+        console.log(item)
+    }
+})
 
 </script>
 </body>
