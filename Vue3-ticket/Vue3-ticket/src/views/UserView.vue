@@ -1,129 +1,128 @@
 <template>
   <div class="c-view">
-    <div class="c-card">
-      <ul class="user-content">
-        <li>
-          <span>用户头像</span>
-          <img :src="avatarUrl" wr="10" alt="img" class="user-avatar" />
-        </li>
-        <li>
-          <span>用户昵称</span>
-          <P>{{ collectInfo.nickname }}</P>
-        </li>
-        <li>
-          <span>个性签名</span>
-          <P>{{ collectInfo.signature }}</P>
-        </li>
-        <li>
-          <span>邮箱</span>
-          <P>{{ collectInfo.email }}</P>
-        </li>
-      </ul>
-      <div class="header-content">
-        <button @click="handleCollectList">我的收藏</button>
-        <button @click="handleUpdateUserInformation">更新用户信息</button>
-        <button @click="handleUserList">用户列表</button>
-        <button @click="handleUpdatePassword">修改密码</button>
-        <button @click="handleResetPassword">重置密码</button>
+    <div class="login-view" v-if="isToken">
+      <img src="@/assets/images/imageUpload.jpg" alt="img" />
+      <span>点击登录</span>
+      <i>></i>
+    </div>
+    <div class="user-avatar" v-else>
+      <vs-image :src="avatarUrl" wr="50" alt="img" v-if="avatarUrl" class="avatar-info" />
+      <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
+    </div>
+    <div class="user-info">
+      <div class="user-trend">
+        <span>{{ trend }}</span>
+        <p>动态</p>
       </div>
+      <div class="user-follow">
+        <span>{{ follow }}</span>
+        <p>关注</p>
+      </div>
+      <div class="user-fans">
+        <span>{{ fans }}</span>
+        <p>粉丝</p>
+      </div>
+    </div>
+    <div class="header-content">
+      <button @click="handleCollectList">我的收藏</button>
+      <button @click="handleUpdateUserInformation">更新用户信息</button>
+      <button @click="handleUserList">用户列表</button>
+      <button @click="handleUpdatePassword">修改密码</button>
+      <button @click="handleResetPassword">重置密码</button>
+    </div>
 
-      <!--      我的收藏-->
-      <van-pull-refresh
-        class="popup-view"
-        v-show="isCollectList"
-        v-model="refreshing"
-        @refresh="handleRefresh"
+    <!--      我的收藏-->
+    <van-pull-refresh
+      class="popup-view"
+      v-show="isCollectList"
+      v-model="refreshing"
+      @refresh="handleRefresh"
+    >
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        v-model:error="error"
+        error-text="请求失败，点击重新加载"
+        @load="handleLoad"
       >
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          v-model:error="error"
-          error-text="请求失败，点击重新加载"
-          @load="handleLoad"
-        >
-          <span>收藏数：{{ collectCount }}</span>
-          <van-cell v-for="item in collectList" :key="item.id">
-            <vs-image :src="item.picture.file.filepath" wr="300" alt="img" />
-          </van-cell>
-        </van-list>
-        <div @click.stop="isCollectList = false" class="colse-collect">关闭</div>
-      </van-pull-refresh>
+        <span>收藏数：{{ collectCount }}</span>
+        <van-cell v-for="item in collectList" :key="item.id">
+          <vs-image :src="item.picture.file.filepath" wr="300" alt="img" />
+        </van-cell>
+      </van-list>
+      <div @click.stop="isCollectList = false" class="colse-collect">关闭</div>
+    </van-pull-refresh>
 
-      <!--      更新用户信息-->
-      <div class="popup-view" v-show="isInformation" @click="isInformation = false">
-        <div class="content" @click.stop="$emit('null')">
-          <h1>更新用户信息</h1>
-          <label class="choose-image">
-            <p>选择头像:</p>
-            <vs-image :src="imgUrl" alt="img" v-if="imgUrl" />
-            <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
-            <input type="file" @change="handleAvatarId" style="opacity: 0" />
-          </label>
-          <div class="item">
-            <input type="text" v-model="nickname" placeholder="请输入昵称" />
-          </div>
-          <div class="item">
-            <input type="text" v-model="signature" placeholder="请输入个性签名" />
-          </div>
-          <div class="item">
-            <input
-              type="number"
-              v-model="sex"
-              placeholder="请选择性别：1：男性  2：女性  3：其他 "
-            />
-          </div>
-          <div class="c-button" @click="handleUpdateUser">提交</div>
+    <!--      更新用户信息-->
+    <div class="popup-view" v-show="isInformation" @click="isInformation = false">
+      <div class="content" @click.stop="$emit('null')">
+        <h1>更新用户信息</h1>
+        <label class="choose-image">
+          <p>选择头像:</p>
+          <vs-image :src="imgUrl" alt="img" v-if="imgUrl" />
+          <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
+          <input type="file" @change="handleAvatarId" style="opacity: 0" />
+        </label>
+        <div class="item">
+          <input type="text" v-model="nickname" placeholder="请输入昵称" />
+        </div>
+        <div class="item">
+          <input type="text" v-model="signature" placeholder="请输入个性签名" />
+        </div>
+        <div class="item">
+          <input type="number" v-model="sex" placeholder="请选择性别：1：男性  2：女性  3：其他 " />
+        </div>
+        <div class="c-button" @click="handleUpdateUser">提交</div>
+      </div>
+    </div>
+
+    <!--      用户列表-->
+    <div class="popup-view" v-show="isUserList" @click="isUserList = false">
+      <div class="content" @click.stop="$emit('null')">
+        <ul class="userlist">
+          <li v-for="(item, index) in UserListInfo" :key="index" class="user-item">
+            <p>用户{{ index + 1 }}： {{ item.nickname }}</p>
+            <button @click="handleUserDetails(item.id)">用户详情</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!--        用户详情-->
+    <div class="popup-view" v-show="isUserDetails" @click="isUserDetails = false">
+      <div class="content" @click.stop="$emit('null')">
+        <div class="userlist">
+          <p>用户名：{{ UserDetail.nickname }}</p>
+          <p>性别：{{ UserDetail.sex }}</p>
+          <p>个性签名：{{ UserDetail.signature }}</p>
+          <p>邮箱：{{ UserDetail.email }}</p>
+          <p>用户ID：{{ UserDetail.id }}</p>
+          <p>用户创建时间：{{ UserDetail.createdAt }}</p>
+          <p>用户最近上线时间：{{ UserDetail.updatedAt }}</p>
         </div>
       </div>
+    </div>
 
-      <!--      用户列表-->
-      <div class="popup-view" v-show="isUserList" @click="isUserList = false">
-        <div class="content" @click.stop="$emit('null')">
-          <ul class="userlist">
-            <li v-for="(item, index) in UserListInfo" :key="index" class="user-item">
-              <p>用户{{ index + 1 }}： {{ item.nickname }}</p>
-              <button @click="handleUserDetails(item.id)">用户详情</button>
-            </li>
-          </ul>
-        </div>
+    <!--        修改密码-->
+    <div class="popup-view" v-show="isUpdatePassword" @click="isUpdatePassword = false">
+      <div class="update-password" @click.stop="$emit('null')">
+        <label>老密码：<input type="text" v-model="oldPassword" /></label>
+        <label>新密码：<input type="text" v-model="password" /></label>
+        <button @click.stop="handleUpdate">提交</button>
       </div>
+    </div>
 
-      <!--        用户详情-->
-      <div class="popup-view" v-show="isUserDetails" @click="isUserDetails = false">
-        <div class="content" @click.stop="$emit('null')">
-          <div class="userlist">
-            <p>用户名：{{ UserDetail.nickname }}</p>
-            <p>性别：{{ UserDetail.sex }}</p>
-            <p>个性签名：{{ UserDetail.signature }}</p>
-            <p>邮箱：{{ UserDetail.email }}</p>
-            <p>用户ID：{{ UserDetail.id }}</p>
-            <p>用户创建时间：{{ UserDetail.createdAt }}</p>
-            <p>用户最近上线时间：{{ UserDetail.updatedAt }}</p>
-          </div>
+    <!--        重置密码-->
+    <div class="popup-view" v-show="isResetPassword" @click="isResetPassword = false">
+      <div class="reset-password" @click.stop="$emit('null')">
+        <label>邮箱：<input type="email" v-model="email" /></label>
+        <div class="captcha">
+          邮箱验证码：<input type="text" v-model.trim="captcha" required maxlength="6" />
+          <button @click="handleCode">发送验证码</button>
         </div>
-      </div>
-
-      <!--        修改密码-->
-      <div class="popup-view" v-show="isUpdatePassword" @click="isUpdatePassword = false">
-        <div class="update-password" @click.stop="$emit('null')">
-          <label>老密码：<input type="text" v-model="oldPassword" /></label>
-          <label>新密码：<input type="text" v-model="password" /></label>
-          <button @click.stop="handleUpdate">提交</button>
-        </div>
-      </div>
-
-      <!--        重置密码-->
-      <div class="popup-view" v-show="isResetPassword" @click="isResetPassword = false">
-        <div class="reset-password" @click.stop="$emit('null')">
-          <label>邮箱：<input type="email" v-model="email" /></label>
-          <div class="captcha">
-            邮箱验证码：<input type="text" v-model.trim="captcha" required maxlength="6" />
-            <button @click="handleCode">发送验证码</button>
-          </div>
-          <label>密码：<input type="text" v-model="resetPassword" /></label>
-          <button @click.stop="handleReset">提交</button>
-        </div>
+        <label>密码：<input type="text" v-model="resetPassword" /></label>
+        <button @click.stop="handleReset">提交</button>
       </div>
     </div>
   </div>
@@ -142,6 +141,10 @@ import {
 } from '@/api'
 import { onBeforeMount, ref, toRaw } from 'vue'
 
+const trend = ref('-')
+const follow = ref('-')
+const fans = ref('-')
+const isToken = ref(false)
 const nickname = ref('')
 const signature = ref('')
 const sex = ref<string>('')
@@ -320,13 +323,59 @@ onBeforeMount(() => {
 @import '@/assets/sass/define.scss';
 
 .c-view {
-  padding: j(20) 0;
+  padding: j(40) j(10);
 }
-
-.c-card {
-  background-color: #ccc;
+.user-avatar,
+.login-view {
+  height: j(50);
+  display: flex;
+  align-items: center;
+  img,
+  .avatar-info {
+    display: block;
+    width: j(50);
+    height: j(50);
+    border-radius: 50%;
+    margin-right: j(10);
+  }
+  span {
+    font-size: j(20);
+    color: #333;
+    flex: 1;
+  }
+  i {
+    font-size: j(20);
+    color: #ccc;
+  }
 }
-
+.user-info {
+  margin-top: j(10);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: j(50);
+}
+.user-trend,
+.user-follow,
+.user-fans {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span {
+    font-size: j(12);
+    color: #333;
+    margin-bottom: j(10);
+  }
+  p {
+    font-size: j(14);
+    color: #ccc;
+  }
+}
+.user-follow {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding: 0 j(50);
+}
 .header-content {
   display: flex;
   flex-direction: column;

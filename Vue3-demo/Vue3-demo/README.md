@@ -1,4 +1,4 @@
-# Vue3-ticket
+# Vue3-demo
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -39,32 +39,14 @@ npm run dev
 npm run build
 ```
 
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
+```
+
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
 npm run lint
 ```
-
-
-
-- 首页
-- 搜索
-- 图片详情
-
-- 登录
-- 注册
-- 找回密码
-
-- 我的
-- 个人中心
-- 上传头像/修改头像/修改资料
-- 修改密码
-- 设置/退出账号
-- 新增作品
-- 粉丝列表
-- 关注列表 / 删除
-- 我的动态
-- 我的收藏
-
-- 用户空间页面
-- 用户动态搜索

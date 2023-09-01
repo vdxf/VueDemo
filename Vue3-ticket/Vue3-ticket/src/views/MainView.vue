@@ -4,7 +4,7 @@
     <van-tabbar v-model="active">
       <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item replace to="/user" icon="friends-o">用户</van-tabbar-item>
-      <router-link class="image-add" to="/imagecreate" v-if="route.path === '/home'">+</router-link>
+      <router-link class="image-add" to="/imagecreate">+</router-link>
     </van-tabbar>
   </div>
 </template>
@@ -33,10 +33,11 @@ const active = ref(0)
   justify-content: center;
   align-items: center;
   position: fixed;
-  right: j(20);
-  bottom: j(60);
-  width: j(44);
-  height: j(44);
+  right: 50vw;
+  transform: translate(50%);
+  bottom: j(10);
+  width: j(40);
+  height: j(40);
   background-color: #eb1e23;
   box-shadow: 0 0 j(10) j(5) #0003;
   border-radius: 50%;
