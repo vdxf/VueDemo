@@ -1,14 +1,6 @@
 <template>
   <div class="home-view">
     <div class="home-nav">
-      <div class="nav-info">
-        <span>{商户名称}</span>
-        <p>业务员名称</p>
-        <div class="exit" @click="handleExit">
-          <i></i>
-          退出
-        </div>
-      </div>
       <div class="nav-search">
         <div class="search-form">
           <van-search
@@ -34,7 +26,7 @@
         error-text="请求失败，点击重新加载"
         @load="handleLoad"
       >
-        <van-cell v-for="(item, index) in list" :key="item.id" @click="handleImageDetail(item.id)">
+        <van-cell v-for="item in list" :key="item.id" @click="handleImageDetail(item.id)">
           <div class="image-detail">
             <vs-image :src="item.file.filepath" wr="200" alt="img" />
             <div class="detail-content">
@@ -166,10 +158,6 @@ const reqDataList = (current: number) => {
       refreshing.value = false
     })
 }
-const handleExit = () => {
-  window.localStorage.removeItem('token')
-  router.replace('/login')
-}
 const handleRefresh = () => {
   reqDataList(1)
   view.value.$el.scrollTop = 0
@@ -242,49 +230,9 @@ watch(keyword, (nv) => {
   background-color: #eb1e23;
   position: relative;
 }
-.nav-info {
-  display: flex;
-  align-items: center;
-  padding: 0 j(12);
-  box-sizing: border-box;
-  padding-bottom: j(10);
-  span {
-    height: j(24);
-    font-size: j(18);
-    font-weight: 500;
-    color: #fff;
-    line-height: j(24);
-    margin-right: j(5);
-  }
-  p {
-    flex: 1;
-    height: j(20);
-    font-size: j(15);
-    font-weight: 500;
-    color: #fff;
-    line-height: j(20);
-  }
-}
-.exit {
-  display: flex;
-  align-items: center;
-  height: j(20);
-  font-size: j(14);
-  color: #ffffff;
-  line-height: j(20);
-  padding-left: j(3);
-  i {
-    display: block;
-    width: j(16);
-    height: j(16);
-    background: url(@/assets/images/exit.png) left center no-repeat;
-    background-size: j(16) j(16);
-  }
-}
 .nav-search {
   height: j(60);
   background: rgba(255, 255, 255, 1);
-  border-radius: j(20) j(20) 0 0;
   padding: j(12);
   display: flex;
   align-items: center;

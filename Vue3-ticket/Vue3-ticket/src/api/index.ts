@@ -88,7 +88,14 @@ export const doCollectList = withLoading((data) => {
     params: data
   })
 })
-
+//获取用户信息
+export const doGetUserInformation = (data) => {
+  return request({
+    url: `/api/v1/user/profile`,
+    method: 'GET',
+    data
+  })
+}
 //更新用户信息
 export const doUpdateUserInformation = withLoading((data) => {
   return request({

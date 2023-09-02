@@ -1,146 +1,176 @@
 <template>
   <div class="login-view">
-    <div class="c-card">
-      <img src="@/assets/images/logo2.png" alt="logo" />
-      <h1>登录</h1>
-
-      <div class="form-box">
-        <div class="form-item">
-          <span>邮箱</span>
-          <input type="text" placeholder="请输入邮箱" v-model.trim="email" />
-        </div>
-        <div class="form-item">
-          <span>密码</span>
-          <input :type="type" id="pwd" placeholder="请输入密码" v-model.trim="password" />
-          <i
-            class="eye-icon"
-            :class="[type === 'password' ? 'closed-eye' : 'open-eye']"
-            @click="type = type === 'password' ? 'text' : 'password'"
-          ></i>
-        </div>
+    <van-nav-bar title="密码登录" left-arrow @click-left="handleBack" />
+    <img src="@/assets/images/desktop_1.jpg" alt="img" class="login-image" />
+    <div class="login-input">
+      <div class="account-input">
+        <span>账号</span>
+        <input type="text" placeholder="请输入邮箱" v-model="email" />
       </div>
-
-      <button class="c-button" @click="handleSubmit">登录</button>
-
-      <router-link class="c-button outline" to="/register">注册账号</router-link>
+      <div class="password-input">
+        <span>密码</span>
+        <input type="password" placeholder="请输入密码" v-model="password" />
+        <i></i>
+        <div class="forgot-password" @click.stop="handleRetrievePassword">忘记密码？</div>
+      </div>
+    </div>
+    <div class="button-group">
+      <button class="register-button" @click="handleRegister">注册</button>
+      <button
+        class="login-button"
+        :class="{ 'login-button-active': email && password }"
+        @click="handleLogin"
+      >
+        登录
+      </button>
+      <div class="help-info">
+        <p>
+          登录即代表你同意<span @click="UserAgreement">用户协议</span>和<span @click="PrivacyPolicy"
+            >隐私政策</span
+          >
+        </p>
+        <p>遇到问题？<span @click="handleHelp">查看帮助</span></p>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { doLogin } from '@/api/index'
-import { ref } from 'vue'
 import router from '@/router'
+import { doUserList } from '@/api'
+import { ref, toRaw } from 'vue'
 
-const type = ref('password')
 const email = ref('2532499815@qq.com')
 const password = ref('123456789')
-const handleSubmit = () => {
+const userInfo = ref()
+const userId = ref()
+//返回
+const handleBack = () => {
+  router.go(-1)
+}
+// 找回密码
+const handleRetrievePassword = () => {
+  router.push('retrievePassword')
+}
+// 注册
+const handleRegister = () => {
+  router.push('register')
+}
+// 登录
+const handleLogin = () => {
   doLogin({ email: email.value, password: password.value })
     .then((result) => {
       window.localStorage.setItem('token', result.token)
       router.replace('/home')
+      handleUserList()
     })
     .catch((error) => {
       alert(error.data.msg)
     })
+}
+//获取用户列表
+const handleUserList = () => {
+  doUserList({
+    current: 1,
+    length: 10
+  })
+    .then((result) => {
+      userInfo.value = result.list.find((item) => {
+        return item.email === email.value
+      })
+      console.log(userInfo.value)
+      userId.value = toRaw(userInfo.value).id
+      window.localStorage.setItem('userId', userId.value)
+    })
+    .catch((error) => {
+      alert(error.data.msg)
+    })
+}
+//用户协议
+const UserAgreement = () => {
+  router.push('useragreement')
+}
+//隐私政策
+const PrivacyPolicy = () => {
+  router.push('PrivacyPolicy')
+}
+//查看帮助
+const handleHelp = () => {
+  router.push('help')
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
 .login-view {
-  padding-top: j(140);
-  background: url(@/assets/images/loginbgc.png) center top no-repeat;
-  background-size: 100% auto;
+  height: 100vh;
 }
-
-.c-card {
+.login-image {
+  width: 100%;
+  height: j(100);
+}
+.login-input {
+  display: flex;
+  flex-direction: column;
+  padding-left: j(10);
+}
+.account-input,
+.password-input {
+  display: flex;
+  padding: j(10) 0;
+  span {
+    margin-right: j(40);
+    font-size: j(16);
+    color: #666;
+  }
+  input {
+    flex: 1;
+    font-size: j(14);
+    margin-right: j(30);
+  }
+}
+.forgot-password {
+  font-size: j(12);
+  color: #ff80af;
+}
+.password-input {
+  border-top: 1px solid #ddd;
+}
+.button-group {
+  height: 100%;
+  background-color: #ddd;
+  padding: j(10);
+  button {
+    width: 48%;
+    height: j(40);
+    font-size: j(16);
+  }
+}
+.register-button {
+  border: #ff80af 1px solid;
+  color: #ff80af;
+  margin-right: j(10);
+}
+.login-button {
+  background-color: #ffb2d0;
+  color: #fff;
+  border: none;
+}
+.login-button-active {
+  background-color: #ff80af;
+  color: #fff;
+  border: none;
+}
+.help-info {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: j(50);
-  img {
-    display: block;
-    border-radius: 50%;
-    width: j(80);
-    height: j(80);
-    margin: j(-40) auto 0;
-    box-shadow: 0 j(5) j(5) j(5) rgba(0, 0, 0, 0.08);
+  color: #888;
+  p {
+    margin-top: j(20);
   }
-
-  h1 {
-    font-size: j(24);
-    line-height: j(33);
-    font-weight: 500;
-    margin-top: j(40);
-    color: #333333;
-  }
-}
-
-.form-box {
-  width: j(310);
-  margin-top: j(40);
-}
-
-.form-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: j(48);
-  border-radius: 8px;
-  border: 1px solid #d6d6d6;
-  margin-top: j(20);
-
-  &:first-child {
-    margin-top: 0;
-  }
-
   span {
-    top: j(-8);
-    left: j(16);
-    background-color: #fff;
-    padding: 0 j(5);
-    position: absolute;
-    font-size: j(12);
-    color: #666666;
-    line-height: j(16);
-  }
-
-  input {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    background-color: transparent;
-    box-sizing: border-box;
-    padding: 0 j(16);
-    font-size: j(16);
-    color: #333;
-  }
-
-  .eye-icon {
-    display: block;
-    width: j(16);
-    height: j(16);
-    position: absolute;
-    right: j(16);
-  }
-
-  .closed-eye {
-    background: url('@/assets/images/eyeclose.png') center center no-repeat;
-    background-size: j(16) j(16);
-  }
-
-  .open-eye {
-    background: url('@/assets/images/eyeopen.png') center center no-repeat;
-    background-size: j(16) j(16);
-  }
-}
-
-.c-button {
-  margin-top: j(28);
-
-  + .c-button {
-    margin-top: j(10);
+    color: #ff80af;
   }
 }
 </style>

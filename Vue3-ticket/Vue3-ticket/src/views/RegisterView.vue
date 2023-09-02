@@ -1,5 +1,6 @@
 <template>
   <div class="password-change">
+    <van-nav-bar title="注册" left-arrow @click-left="handleBack" />
     <div class="c-card">
       <div class="form-box">
         <div class="form-item">
@@ -87,16 +88,17 @@ const handleRegister = () => {
 const handleFinish = () => {
   sendCode.value = false
 }
+const handleBack = () => {
+  router.go(-1)
+}
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
 
 .password-change {
-  padding-top: j(116);
   background-color: #fafafa;
 }
-
 .c-card {
   padding: j(20);
 }
