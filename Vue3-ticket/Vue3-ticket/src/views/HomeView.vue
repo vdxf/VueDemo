@@ -267,6 +267,7 @@ watch(keyword, (nv) => {
 }
 .image-detail {
   display: flex;
+  flex-direction: column;
   align-items: center;
 
   img {

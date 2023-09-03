@@ -89,6 +89,12 @@ const router = createRouter({
       meta: { title: '我的收藏' }
     },
     {
+      path: '/edit',
+      name: 'Edit',
+      component: () => import('@/views/EditView.vue'),
+      meta: { title: '编辑资料' }
+    },
+    {
       path: '/:pathMatch(.*)',
       name: 'error',
       component: () => import('@/views/NotFount.vue'),

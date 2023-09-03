@@ -75,7 +75,7 @@ const handleUserList = () => {
     length: 10
   })
     .then((result) => {
-      userInfo.value = result.list.find((item) => {
+      userInfo.value = result.list.find((item: any) => {
         return item.email === email.value
       })
       console.log(userInfo.value)

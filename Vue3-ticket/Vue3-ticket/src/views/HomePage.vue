@@ -2,9 +2,16 @@
   <div class="homepage-view">
     <div class="header-content">
       <img src="@/assets/images/desktop_4.jpg" alt="img" />
-      <div class="back">&lt;</div>
+      <div class="back" @click="handleBack">&lt;</div>
       <div class="search"><i></i></div>
-      <div class="share"><i></i></div>
+      <van-cell @click="showShare = true" class="share" />
+      <van-share-sheet
+        v-model:show="showShare"
+        title="立即分享给好友"
+        :options="options"
+        @select="onSelect"
+      />
+      <div></div>
     </div>
     <div class="homepage-content">
       <div class="info-header">
@@ -24,7 +31,7 @@
               <p>获赞</p>
             </div>
           </div>
-          <button>编辑资料</button>
+          <button @click="handleEdit">编辑资料</button>
         </div>
       </div>
       <div class="info-nickname">
@@ -34,22 +41,63 @@
         <p>{{ signature }}</p>
         <span>详情</span>
       </div>
-      <div class="title-group">
-        <span>主页</span>
-        <span>动态</span>
-        <span>收藏</span>
-      </div>
+      <van-tabs v-model:active="active" class="title-group">
+        <van-tab title="主页">主页</van-tab>
+        <van-tab title="动态">动态</van-tab>
+        <van-tab title="收藏">收藏</van-tab>
+      </van-tabs>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import { doUserDetails } from '@/api'
+import router from '@/router'
+import { showToast } from 'vant'
+import { onBeforeMount } from 'vue'
 import { ref } from 'vue'
 
 const fans = ref('-')
 const follow = ref('-')
 const like = ref('-')
 const nickname = ref('昵称')
-const signature = ref('个性签名')
+const signature = ref('')
+
+const active = ref(0)
+onBeforeMount(() => {
+  const id = window.localStorage.getItem('userId')
+  doUserDetails(id)
+    .then((result) => {
+      const arr = result
+      fans.value = arr.followerCount
+      follow.value = arr.followingCount
+      nickname.value = arr.nickname
+      signature.value = arr.signature || '个性签名'
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+//编辑资料
+const handleEdit = () => {
+  router.push('edit')
+}
+//返回
+const handleBack = () => {
+  router.go(-1)
+}
+const showShare = ref(false)
+const options = [
+  { name: '微信', icon: 'wechat' },
+  { name: '微博', icon: 'weibo' },
+  { name: '复制链接', icon: 'link' },
+  { name: '分享海报', icon: 'poster' },
+  { name: '二维码', icon: 'qrcode' }
+]
+
+const onSelect = (option: any) => {
+  showToast(option.name)
+  showShare.value = false
+}
 </script>
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
@@ -97,13 +145,9 @@ const signature = ref('个性签名')
 }
 .share {
   right: j(10);
-  i {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: url(@/assets/images/more.svg) center center no-repeat;
-    background-size: j(25) j(25);
-  }
+  background: url(@/assets/images/more.svg) center center no-repeat;
+  background-color: #000;
+  background-size: j(25) j(25);
 }
 .homepage-content {
   background-color: #fff;
@@ -179,10 +223,10 @@ const signature = ref('个性签名')
 }
 .title-group {
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   font-size: j(20);
   color: #999;
-  padding: j(10) 0;
   border-top: 1px solid #f1f1f1;
 }
 </style>
