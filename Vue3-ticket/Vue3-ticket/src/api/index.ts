@@ -55,7 +55,7 @@ export const doTabulation = withLoading((data: {}) => {
   })
 })
 
-//更新
+//图片更新
 export const doUpdata = withLoading((data) => {
   return request({
     url: `/api/v1/picture/${data.id}`,

@@ -83,6 +83,12 @@ const router = createRouter({
       meta: { title: '个人中心' }
     },
     {
+      path: '/mysearch',
+      name: 'MySearch',
+      component: () => import('@/views/MySearch.vue'),
+      meta: { title: '个人中心搜索' }
+    },
+    {
       path: '/myCollect',
       name: 'MyCollect',
       component: () => import('@/views/MyCollect.vue'),

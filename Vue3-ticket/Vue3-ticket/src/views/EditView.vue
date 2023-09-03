@@ -3,25 +3,33 @@
     <van-nav-bar title="账号资料" left-arrow @click-left="handleBack" class="edit-header" />
     <div class="edit-content">
       <label>
-        <van-cell title="头像" is-link value="内容" />
+        <van-cell title="头像" is-link>
+          <template #right-icon>
+            <vs-image :src="avatarUrl" wr="50" class="avatar-info" />
+          </template>
+        </van-cell>
         <input type="file" @change="handleFiles" />
       </label>
-      <van-cell title="昵称" is-link value="内容" />
-      <van-cell title="性别" is-link value="内容" />
-      <van-cell title="出生年月" is-link value="内容" />
-      <van-cell title="个性签名" is-link value="内容" />
+      <van-cell title="昵称" is-link :value="nickname" />
+      <van-cell title="性别" is-link :value="sex" />
+      <van-cell title="个性签名" is-link :value="signature" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import router from '@/router'
-import { doFile } from '@/api'
+import { doFile, doUpdateUserInformation, doUserDetails } from '@/api'
 
 const fileId = ref<any>('')
 const files = ref('')
-const imgUrl = ref('')
-
+const sex = ref()
+const nickname = ref()
+const signature = ref('')
+const newnickname = ref('')
+const newsignature = ref('')
+const avatarUrl = ref()
+const userInfo = ref()
 //返回
 const handleBack = () => {
   router.go(-1)
@@ -35,12 +43,42 @@ const handleFiles = (event: any) => {
   doFile(formData)
     .then((result) => {
       fileId.value = result.id
-      imgUrl.value = 'https://img.daysnap.cn/' + result.filepath
+      avatarUrl.value = 'https://img.daysnap.cn/' + result.filepath
+      updata()
     })
     .catch((error) => {
       alert(error.data.msg)
     })
 }
+//更新用户信息
+const updata = () => {
+  doUpdateUserInformation({
+    nickname: newnickname.value,
+    signature: newsignature.value,
+    sex: sex.value,
+    avatarId: fileId.value
+  })
+    .then((result) => {
+      const id = window.localStorage.getItem('userId')
+      doUserDetails(id)
+        .then((result) => {
+          window.localStorage.setItem('userInfo', JSON.stringify(result))
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+onBeforeMount(() => {
+  userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
+  avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  nickname.value = userInfo.value.nickname
+  signature.value = userInfo.value.signature || '个性签名'
+  sex.value = userInfo.value.sex
+})
 </script>
 <style lang="scss" scoped>
 @import '@/assets/sass/define.scss';
@@ -56,5 +94,11 @@ const handleFiles = (event: any) => {
   input {
     display: none;
   }
+}
+.avatar-info {
+  display: block;
+  width: j(50);
+  height: j(50);
+  border-radius: 50%;
 }
 </style>

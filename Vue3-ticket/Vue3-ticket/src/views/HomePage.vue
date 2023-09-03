@@ -3,7 +3,7 @@
     <div class="header-content">
       <img src="@/assets/images/desktop_4.jpg" alt="img" />
       <div class="back" @click="handleBack">&lt;</div>
-      <div class="search"><i></i></div>
+      <div class="search" @click="handleMySearch"><i></i></div>
       <van-cell @click="showShare = true" class="share" />
       <van-share-sheet
         v-model:show="showShare"
@@ -15,7 +15,7 @@
     </div>
     <div class="homepage-content">
       <div class="info-header">
-        <img src="@/assets/images/desktop_6.jpg" alt="img" class="info-header-image" />
+        <vs-image :src="avatarUrl" class="avatar-info" />
         <div class="info-header-content">
           <div class="info-header-item">
             <div class="fans">
@@ -50,7 +50,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { doUserDetails } from '@/api'
 import router from '@/router'
 import { showToast } from 'vant'
 import { onBeforeMount } from 'vue'
@@ -61,21 +60,17 @@ const follow = ref('-')
 const like = ref('-')
 const nickname = ref('昵称')
 const signature = ref('')
+const avatarUrl = ref()
+const userInfo = ref()
 
 const active = ref(0)
 onBeforeMount(() => {
-  const id = window.localStorage.getItem('userId')
-  doUserDetails(id)
-    .then((result) => {
-      const arr = result
-      fans.value = arr.followerCount
-      follow.value = arr.followingCount
-      nickname.value = arr.nickname
-      signature.value = arr.signature || '个性签名'
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
+  avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  nickname.value = userInfo.value.nickname
+  signature.value = userInfo.value.signature || '个性签名'
+  follow.value = userInfo.value.followingCount
+  fans.value = userInfo.value.followerCount
 })
 //编辑资料
 const handleEdit = () => {
@@ -85,6 +80,11 @@ const handleEdit = () => {
 const handleBack = () => {
   router.go(-1)
 }
+//搜索
+const handleMySearch = () => {
+  router.push('mysearch')
+}
+//分享
 const showShare = ref(false)
 const options = [
   { name: '微信', icon: 'wechat' },
@@ -93,7 +93,6 @@ const options = [
   { name: '分享海报', icon: 'poster' },
   { name: '二维码', icon: 'qrcode' }
 ]
-
 const onSelect = (option: any) => {
   showToast(option.name)
   showShare.value = false

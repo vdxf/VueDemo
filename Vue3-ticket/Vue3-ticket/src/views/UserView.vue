@@ -43,9 +43,10 @@
 
 <script setup lang="ts">
 import { doUserDetails } from '@/api'
-import router from '@/router'
 import { onBeforeMount, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
+const router = useRouter()
 const trend = ref('-')
 const follow = ref('-')
 const fans = ref('-')
@@ -72,6 +73,7 @@ const handleUserDetail = () => {
   const id = window.localStorage.getItem('userId')
   doUserDetails(id)
     .then((result) => {
+      window.localStorage.setItem('userInfo', JSON.stringify(result))
       userDetail.value = result
       avatarUrl.value = 'https://img.daysnap.cn/' + userDetail.value.avatar.filepath
       nickname.value = userDetail.value.nickname
