@@ -3,7 +3,9 @@
     <div class="header-content">
       <img src="@/assets/images/desktop_4.jpg" alt="img" />
       <div class="back" @click="handleBack">&lt;</div>
-      <div class="search" @click="handleMySearch"><i></i></div>
+      <router-link to="/mysearch">
+        <div class="search"><i></i></div>
+      </router-link>
       <van-cell @click="showShare = true" class="share" />
       <van-share-sheet
         v-model:show="showShare"
@@ -31,7 +33,9 @@
               <p>获赞</p>
             </div>
           </div>
-          <button @click="handleEdit">编辑资料</button>
+          <router-link to="/edit" class="edit-button">
+            <button>编辑资料</button>
+          </router-link>
         </div>
       </div>
       <div class="info-nickname">
@@ -41,20 +45,22 @@
         <p>{{ signature }}</p>
         <span>详情</span>
       </div>
-      <van-tabs v-model:active="active" class="title-group">
-        <van-tab title="主页">主页</van-tab>
-        <van-tab title="动态">动态</van-tab>
-        <van-tab title="收藏">收藏</van-tab>
+      <van-tabs v-model:active="activeName" class="title-group" routes>
+        <van-tab title="主页" name="/homepage/myhome" replace to="/homepage/myhome"></van-tab>
+        <van-tab title="动态" name="/homepage/mytrand" replace to="/homepage/mytrand"></van-tab>
+        <van-tab title="收藏" name="/homepage/mycollect" replace to="/homepage/mycollect"></van-tab>
       </van-tabs>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 <script lang="ts" setup>
-import router from '@/router'
+import { useRoute, useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { onBeforeMount } from 'vue'
 import { ref } from 'vue'
-
+const route = useRoute()
+const router = useRouter()
 const fans = ref('-')
 const follow = ref('-')
 const like = ref('-')
@@ -63,8 +69,9 @@ const signature = ref('')
 const avatarUrl = ref()
 const userInfo = ref()
 
-const active = ref(0)
+const activeName = ref()
 onBeforeMount(() => {
+  activeName.value = route.path
   userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
   avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
   nickname.value = userInfo.value.nickname
@@ -72,17 +79,9 @@ onBeforeMount(() => {
   follow.value = userInfo.value.followingCount
   fans.value = userInfo.value.followerCount
 })
-//编辑资料
-const handleEdit = () => {
-  router.push('edit')
-}
 //返回
 const handleBack = () => {
   router.go(-1)
-}
-//搜索
-const handleMySearch = () => {
-  router.push('mysearch')
 }
 //分享
 const showShare = ref(false)
@@ -168,14 +167,18 @@ const onSelect = (option: any) => {
   display: flex;
   flex-direction: column;
   button {
-    margin-top: j(10);
     flex: 1;
     width: 100%;
+    height: 100%;
     border: #ff80af 1px solid;
     background-color: #fff;
     color: #ff80af;
     font-size: j(14);
   }
+}
+.edit-button {
+  flex: 1;
+  margin-top: j(10);
 }
 .info-header-item {
   display: flex;

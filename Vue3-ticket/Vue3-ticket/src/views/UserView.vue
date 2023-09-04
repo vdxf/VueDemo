@@ -26,7 +26,7 @@
           <p>粉丝</p>
         </div>
       </div>
-      <div class="my-trand" @click.stop="handleCollect">
+      <div class="my-collect" @click.stop="handleCollect">
         <i></i>
         <span>我的收藏</span>
       </div>
@@ -92,7 +92,7 @@ const handleSetup = () => {
 //动态
 const handleTrand = () => {
   if (isToken.value) {
-    router.push('trand')
+    router.push('/homepage/mytrand')
   } else {
     router.push('/login')
   }
@@ -116,7 +116,7 @@ const handleFans = () => {
 //我的收藏
 const handleCollect = () => {
   if (isToken.value) {
-    router.push('myCollect')
+    router.push('/homepage/mycollect')
   } else {
     router.push('/login')
   }
@@ -190,7 +190,7 @@ const handleCollect = () => {
   border-right: 1px solid #ccc;
   padding: 0 j(50);
 }
-.my-trand {
+.my-collect {
   margin-top: j(10);
   display: flex;
   flex-direction: column;

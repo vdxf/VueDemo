@@ -79,20 +79,35 @@ const router = createRouter({
     {
       path: '/homepage',
       name: 'HomePage',
+      redirect: '/homepage/myhome',
       component: () => import('@/views/HomePage.vue'),
-      meta: { title: '个人中心' }
+      meta: { title: '个人中心' },
+      children: [
+        {
+          path: 'myhome',
+          name: 'MyHome',
+          component: () => import('@/views/MyHome.vue'),
+          meta: { title: '个人中心主页' }
+        },
+        {
+          path: 'mytrand',
+          name: 'MyTrand',
+          component: () => import('@/views/MyTrand.vue'),
+          meta: { title: '个人中心动态' }
+        },
+        {
+          path: 'mycollect',
+          name: 'MyCollect',
+          component: () => import('@/views/MyCollect.vue'),
+          meta: { title: '个人中心收藏' }
+        }
+      ]
     },
     {
       path: '/mysearch',
       name: 'MySearch',
       component: () => import('@/views/MySearch.vue'),
       meta: { title: '个人中心搜索' }
-    },
-    {
-      path: '/myCollect',
-      name: 'MyCollect',
-      component: () => import('@/views/MyCollect.vue'),
-      meta: { title: '我的收藏' }
     },
     {
       path: '/edit',

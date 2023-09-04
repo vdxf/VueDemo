@@ -10,7 +10,16 @@
         </van-cell>
         <input type="file" @change="handleFiles" />
       </label>
-      <van-cell title="昵称" is-link :value="nickname" />
+      <van-cell title="昵称" is-link :value="nickname" @click="dialogShow = true" />
+      <van-dialog
+        v-model:show="dialogShow"
+        title="修改昵称"
+        show-cancel-button
+        @confirm="handleNickname"
+        @cancel="removeInfo"
+      >
+        <van-field v-model="newnickname" placeholder="请输入昵称" />
+      </van-dialog>
       <van-cell title="性别" is-link :value="sex" />
       <van-cell title="个性签名" is-link :value="signature" />
     </div>
@@ -30,6 +39,7 @@ const newnickname = ref('')
 const newsignature = ref('')
 const avatarUrl = ref()
 const userInfo = ref()
+const dialogShow = ref()
 //返回
 const handleBack = () => {
   router.go(-1)
@@ -50,6 +60,13 @@ const handleFiles = (event: any) => {
       alert(error.data.msg)
     })
 }
+//修改昵称
+const handleNickname = () => {
+  updata()
+}
+const removeInfo = () => {
+  newnickname.value = ''
+}
 //更新用户信息
 const updata = () => {
   doUpdateUserInformation({
@@ -59,6 +76,7 @@ const updata = () => {
     avatarId: fileId.value
   })
     .then((result) => {
+      nicknameCancle()
       const id = window.localStorage.getItem('userId')
       doUserDetails(id)
         .then((result) => {
