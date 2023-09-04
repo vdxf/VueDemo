@@ -2,6 +2,7 @@
   <div class="edit-view">
     <van-nav-bar title="账号资料" left-arrow @click-left="handleBack" class="edit-header" />
     <div class="edit-content">
+      <!-- 修改头像 -->
       <label>
         <van-cell title="头像" is-link>
           <template #right-icon>
@@ -10,18 +11,47 @@
         </van-cell>
         <input type="file" @change="handleFiles" />
       </label>
-      <van-cell title="昵称" is-link :value="nickname" @click="dialogShow = true" />
+      <!-- 修改昵称 -->
+      <van-cell title="昵称" is-link :value="nickname" @click="nicknameDialog = !nicknameDialog" />
       <van-dialog
-        v-model:show="dialogShow"
+        v-model:show="nicknameDialog"
         title="修改昵称"
         show-cancel-button
-        @confirm="handleNickname"
+        @confirm="updata"
         @cancel="removeInfo"
       >
-        <van-field v-model="newnickname" placeholder="请输入昵称" />
+        <van-field v-model.trim="newnickname" placeholder="请输入昵称" />
       </van-dialog>
-      <van-cell title="性别" is-link :value="sex" />
-      <van-cell title="个性签名" is-link :value="signature" />
+      <!-- 修改性别 -->
+      <van-cell title="性别" is-link :value="sex" @click="sexDialog = !sexDialog" />
+      <van-dialog
+        v-model:show="sexDialog"
+        title="修改性别"
+        show-cancel-button
+        @confirm="updata"
+        @cancel="removeInfo"
+      >
+        <van-radio-group v-model="newsex" direction="horizontal" class="sex-choose">
+          <van-radio name="1">男</van-radio>
+          <van-radio name="2">女</van-radio>
+        </van-radio-group>
+      </van-dialog>
+      <!-- 修改签名 -->
+      <van-cell
+        title="个性签名"
+        is-link
+        :value="signature"
+        @click="signatureDialog = !signatureDialog"
+      />
+      <van-dialog
+        v-model:show="signatureDialog"
+        title="修改个性签名"
+        show-cancel-button
+        @confirm="updata"
+        @cancel="removeInfo"
+      >
+        <van-field v-model.trim="newsignature" placeholder="请输入你的个性签名" />
+      </van-dialog>
     </div>
   </div>
 </template>
@@ -32,14 +62,17 @@ import { doFile, doUpdateUserInformation, doUserDetails } from '@/api'
 
 const fileId = ref<any>('')
 const files = ref('')
-const sex = ref()
+const sex = ref<string>()
 const nickname = ref()
 const signature = ref('')
 const newnickname = ref('')
+const newsex = ref<string>('')
 const newsignature = ref('')
 const avatarUrl = ref()
 const userInfo = ref()
-const dialogShow = ref()
+const nicknameDialog = ref()
+const sexDialog = ref()
+const signatureDialog = ref()
 //返回
 const handleBack = () => {
   router.go(-1)
@@ -60,27 +93,25 @@ const handleFiles = (event: any) => {
       alert(error.data.msg)
     })
 }
-//修改昵称
-const handleNickname = () => {
-  updata()
-}
 const removeInfo = () => {
   newnickname.value = ''
+  newsignature.value = ''
 }
 //更新用户信息
 const updata = () => {
   doUpdateUserInformation({
     nickname: newnickname.value,
     signature: newsignature.value,
-    sex: sex.value,
+    sex: newsex.value || sex.value,
     avatarId: fileId.value
   })
-    .then((result) => {
-      nicknameCancle()
+    .then(() => {
+      removeInfo()
       const id = window.localStorage.getItem('userId')
       doUserDetails(id)
         .then((result) => {
           window.localStorage.setItem('userInfo', JSON.stringify(result))
+          getInfo()
         })
         .catch((error) => {
           console.log(error)
@@ -90,12 +121,16 @@ const updata = () => {
       console.log(error)
     })
 }
-onBeforeMount(() => {
+//获取用户信息
+const getInfo = () => {
   userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
   avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
   nickname.value = userInfo.value.nickname
   signature.value = userInfo.value.signature || '个性签名'
   sex.value = userInfo.value.sex
+}
+onBeforeMount(() => {
+  getInfo()
 })
 </script>
 <style lang="scss" scoped>
@@ -118,5 +153,8 @@ onBeforeMount(() => {
   width: j(50);
   height: j(50);
   border-radius: 50%;
+}
+.sex-choose {
+  text-align: center;
 }
 </style>
