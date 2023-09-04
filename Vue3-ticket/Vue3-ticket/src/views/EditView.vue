@@ -6,7 +6,8 @@
       <label>
         <van-cell title="头像" is-link>
           <template #right-icon>
-            <vs-image :src="avatarUrl" wr="50" class="avatar-info" />
+            <vs-image :src="avatarUrl" wr="50" class="avatar-info" v-if="avatarUrl" />
+            <img src="@/assets/images/imageUpload.jpg" alt="img" v-else class="avatar-info" />
           </template>
         </van-cell>
         <input type="file" @change="handleFiles" />
@@ -124,7 +125,9 @@ const updata = () => {
 //获取用户信息
 const getInfo = () => {
   userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
-  avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  if (userInfo.value.avatar) {
+    avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  }
   nickname.value = userInfo.value.nickname
   signature.value = userInfo.value.signature || '个性签名'
   sex.value = userInfo.value.sex

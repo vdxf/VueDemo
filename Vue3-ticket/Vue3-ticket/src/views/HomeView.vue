@@ -1,22 +1,25 @@
 <template>
   <div class="home-view">
-    <div class="home-nav">
-      <div class="nav-search">
-        <div class="search-form">
-          <van-search
-            v-model="keyword"
-            show-action
-            placeholder="请输入搜索关键词"
-            @search="handleSearch"
-          >
-            <template #action>
-              <div class="search-button" @click="handleSearch">搜索</div>
-            </template>
-          </van-search>
-        </div>
+    <!-- 头部搜索 -->
+    <div class="home-header">
+      <router-link to="user">
+        <vs-image :src="avatarUrl" wr="50" class="header-avatar" />
+      </router-link>
+      <div class="search-form">
+        <van-search
+          v-model="keyword"
+          show-action
+          placeholder="请输入搜索关键词"
+          @search="handleSearch"
+          shape="round"
+        >
+          <template #action>
+            <div class="search-button" @click="handleSearch">搜索</div>
+          </template>
+        </van-search>
       </div>
     </div>
-
+    <!-- 图片列表 -->
     <van-pull-refresh class="content" v-model="refreshing" @refresh="handleRefresh" ref="view">
       <van-list
         v-model:loading="loading"
@@ -25,30 +28,18 @@
         v-model:error="error"
         error-text="请求失败，点击重新加载"
         @load="handleLoad"
+        class="image-list"
       >
-        <van-cell v-for="item in list" :key="item.id" @click="handleImageDetail(item.id)">
-          <div class="image-detail">
-            <vs-image :src="item.file.filepath" wr="200" alt="img" />
-            <div class="detail-content">
-              <span>{{ item.title }}</span>
-              <span>{{ item.updatedAt }}</span>
-              <span>{{ item.description }}</span>
-              <div class="image-operate">
-                <div @click.stop="handleLike(item.id, item.isLike)" class="image-like">
-                  <i v-if="item.isLike">取消点赞</i>
-                  <i v-else>点赞</i>
-                  <span>{{ item.likeCount }}</span>
-                </div>
-                <div @click.stop="handleCollect(item.id, item.isCollect)" class="image-collect">
-                  <i v-if="item.isCollect">取消收藏</i>
-                  <i v-else>收藏</i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="image-button-group">
-            <button v-preventReClick @click.stop="handleUpdataImage(item)">更新</button>
-            <button @click.stop="handleDeleteImage(item.id)">删除</button>
+        <van-cell
+          v-for="item in list"
+          :key="item.id"
+          @click="handleImageDetail(item.id)"
+          class="image-item"
+        >
+          <vs-image :src="item.file.filepath" wr="200" alt="img" />
+          <div class="detail-content">
+            <span>{{ item.description }}</span>
+            <span><i></i>{{ item.user.nickname }}</span>
           </div>
         </van-cell>
       </van-list>
@@ -57,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw, watch } from 'vue'
+import { onBeforeMount, ref, toRaw } from 'vue'
 import { showConfirmDialog, showSuccessToast, showFailToast } from 'vant'
 import {
   doCancelCollect,
@@ -81,6 +72,11 @@ const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
 const view = ref()
+const avatarUrl = ref()
+onBeforeMount(() => {
+  const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+  avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.avatar.filepath
+})
 // 点赞
 const handleLike = (id: any, isLike: any) => {
   if (!isLike) {
@@ -137,6 +133,50 @@ const handleCollect = (id: any, isCollect: any) => {
       })
   }
 }
+//更新
+const handleUpdataImage = (item: any) => {
+  const data = toRaw(item)
+  router.push({
+    path: '/imagecreate',
+    query: {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      type: data.type,
+      fileId: data.file.id,
+      imgUrl: data.file.filepath
+    }
+  })
+}
+//删除
+const handleDeleteImage = (id: any) => {
+  showConfirmDialog({
+    title: '温馨提示',
+    message: '确认要删除吗'
+  })
+    .then(() => {
+      doDelete(id)
+        .then(() => {
+          reqDataList(1)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    })
+    .catch(() => {
+      // on cancel
+    })
+}
+//跳转图片详情
+const handleImageDetail = (id: any) => {
+  router.push({
+    path: '/imagedetail',
+    query: {
+      id
+    }
+  })
+}
+//获取图片列表
 const reqDataList = (current: number) => {
   doTabulation({
     current: current,
@@ -158,61 +198,20 @@ const reqDataList = (current: number) => {
       refreshing.value = false
     })
 }
+//下拉刷新
 const handleRefresh = () => {
   reqDataList(1)
   view.value.$el.scrollTop = 0
 }
+//上拉加载
 const handleLoad = () => {
   reqDataList(current1 + 1)
 }
+//搜索
 const handleSearch = () => {
   keyword1.value = keyword.value
   handleRefresh()
 }
-const handleUpdataImage = (item: any) => {
-  const data = toRaw(item)
-  router.push({
-    path: '/imagecreate',
-    query: {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      type: data.type,
-      fileId: data.file.id,
-      imgUrl: data.file.filepath
-    }
-  })
-}
-const handleImageDetail = (id: any) => {
-  router.push({
-    path: '/imagedetail',
-    query: {
-      id
-    }
-  })
-}
-const handleDeleteImage = (id: any) => {
-  showConfirmDialog({
-    title: '温馨提示',
-    message: '确认要删除吗'
-  })
-    .then(() => {
-      doDelete(id)
-        .then(() => {
-          reqDataList(1)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    })
-    .catch(() => {
-      // on cancel
-    })
-}
-watch(keyword, (nv) => {
-  keyword1.value = nv
-  handleRefresh()
-})
 </script>
 
 <style lang="scss" scoped>
@@ -220,135 +219,77 @@ watch(keyword, (nv) => {
 .home-view {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   height: 100vh;
-  position: relative;
-  padding-bottom: j(50);
-  background-color: #fafafa;
+  padding: j(10);
 }
-.home-nav {
-  background-color: #eb1e23;
-  position: relative;
-}
-.nav-search {
-  height: j(60);
-  background: rgba(255, 255, 255, 1);
-  padding: j(12);
+.home-header {
   display: flex;
-  align-items: center;
-  box-sizing: border-box;
+  flex-direction: row;
+}
+.header-avatar {
+  display: block;
+  width: j(50);
+  height: j(50);
+  border-radius: 50%;
 }
 .search-form {
   flex: 1;
-  height: j(36);
-  box-sizing: border-box;
-  background: #f5f5f5;
-  border-radius: j(8);
-  display: flex;
-  align-items: center;
-  .van-search {
-    flex: 1;
-    background: transparent;
-    padding: 0 !important;
-    .van-search__action {
-      height: j(24);
-      line-height: j(24);
-      font-size: j(12);
-      border-radius: j(4);
-      background-color: red;
-      color: #fff;
-      margin-right: j(10);
-    }
-  }
-}
-.content {
-  flex: 1;
-  overflow-y: auto;
-}
-.image-detail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  img {
-    display: block;
-    width: j(100);
-    height: j(100);
-    margin-right: j(10);
-  }
-}
-
-.detail-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  span {
-    font-size: j(16);
-  }
-}
-
-.image-button-group {
-  display: flex;
-  margin-top: j(20);
-
-  button {
-    width: j(40);
-    border: none;
-    background-color: rgba(150, 250, 250, 0.99);
-    border-radius: j(8);
-    flex: 1;
-  }
-
-  button:last-child {
-    margin-left: j(10);
-  }
-}
-.van-list {
-  margin-bottom: j(50);
 }
 .search-button {
   width: j(40);
   height: j(24);
   line-height: j(24);
   text-align: center;
-  font-size: j(12);
-  border-radius: j(4);
+  border-radius: j(10);
   background-color: red;
   color: #fff;
 }
-.image-operate {
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+.image-list {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-}
-.image-like {
+  flex-wrap: wrap;
+  padding-bottom: j(100);
   position: relative;
-  display: flex;
-  justify-content: center;
-  background-color: #ff6d72;
-  color: #fff;
-  border: none;
-  border-radius: j(8);
-  width: j(80);
-  height: j(20);
-  line-height: j(20);
-  margin-right: j(40);
-  span {
-    color: #000;
+  .van-list-finished-text {
     position: absolute;
-    right: j(-20);
+    left: 0;
+    right: 0;
+    bottom: j(60);
   }
 }
-.image-collect {
+.image-item {
+  width: 50%;
+  padding: j(5);
   display: flex;
-  justify-content: center;
-  background-color: #ff6d72;
-  color: #fff;
-  border: none;
-  border-radius: j(8);
-  width: j(80);
-  height: j(20);
-  line-height: j(20);
+  flex-direction: column;
+  img {
+    display: block;
+    width: 100%;
+    height: j(100);
+  }
+}
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  span {
+    white-space: nowrap;
+    &:last-child {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  i {
+    display: block;
+    width: j(20);
+    height: j(20);
+    background: url(@/assets/images/UP.svg);
+    background-size: 100% 100%;
+  }
 }
 </style>

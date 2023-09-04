@@ -1,12 +1,16 @@
 <template>
   <div class="mysearch-view">
-    <div class="search-form">
-      <van-search v-model="keyword" show-action placeholder="搜索" @search="handleSearch">
-        <template #action>
-          <div class="search-button" @click="handleSearch">搜索</div>
-        </template>
-      </van-search>
-    </div>
+    <van-search
+      v-model="keyword"
+      show-action
+      placeholder="搜索"
+      @search="handleSearch"
+      shape="round"
+    >
+      <template #action>
+        <div @click="handleSearch">搜索</div>
+      </template>
+    </van-search>
 
     <van-pull-refresh class="content" v-model="refreshing" @refresh="handleRefresh" ref="view">
       <van-list
@@ -87,9 +91,6 @@ const handleSearch = () => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-}
-.search-form {
-  border-radius: j(8);
 }
 .content {
   flex: 1;

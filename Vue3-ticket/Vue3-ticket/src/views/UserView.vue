@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { doUserDetails } from '@/api'
 import { onBeforeMount, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const trend = ref('-')
@@ -75,11 +75,13 @@ const handleUserDetail = () => {
     .then((result) => {
       window.localStorage.setItem('userInfo', JSON.stringify(result))
       userDetail.value = result
-      avatarUrl.value = 'https://img.daysnap.cn/' + userDetail.value.avatar.filepath
       nickname.value = userDetail.value.nickname
       trend.value = userDetail.value.pictureCount
       follow.value = userDetail.value.followingCount
       fans.value = userDetail.value.followerCount
+      if (userDetail.value.avatar) {
+        avatarUrl.value = 'https://img.daysnap.cn/' + userDetail.value.avatar.filepath
+      }
     })
     .catch((error) => {
       console.log(error)
@@ -100,7 +102,7 @@ const handleTrand = () => {
 //关注
 const handleFollow = () => {
   if (isToken.value) {
-    router.push('follow')
+    router.push('/followfans/follow')
   } else {
     router.push('/login')
   }
@@ -108,7 +110,7 @@ const handleFollow = () => {
 //粉丝
 const handleFans = () => {
   if (isToken.value) {
-    router.push('fans')
+    router.push('/followfans/fans')
   } else {
     router.push('/login')
   }

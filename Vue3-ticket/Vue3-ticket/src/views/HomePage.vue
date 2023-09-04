@@ -17,17 +17,22 @@
     </div>
     <div class="homepage-content">
       <div class="info-header">
-        <vs-image :src="avatarUrl" class="avatar-info" />
+        <vs-image :src="avatarUrl" class="avatar-info" v-if="avatarUrl" />
+        <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
         <div class="info-header-content">
           <div class="info-header-item">
-            <div class="fans">
-              <span>{{ fans }}</span>
-              <p>粉丝</p>
-            </div>
-            <div class="follow">
-              <span>{{ follow }}</span>
-              <p>关注</p>
-            </div>
+            <router-link to="/followfans/fans">
+              <div class="fans">
+                <span>{{ fans }}</span>
+                <p>粉丝</p>
+              </div>
+            </router-link>
+            <router-link to="/followfans/follow">
+              <div class="follow">
+                <span>{{ follow }}</span>
+                <p>关注</p>
+              </div>
+            </router-link>
             <div class="like">
               <span>{{ like }}</span>
               <p>获赞</p>
@@ -59,6 +64,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { onBeforeMount } from 'vue'
 import { ref } from 'vue'
+import { url } from 'inspector'
 const route = useRoute()
 const router = useRouter()
 const fans = ref('-')
@@ -68,16 +74,17 @@ const nickname = ref('昵称')
 const signature = ref('')
 const avatarUrl = ref()
 const userInfo = ref()
-
 const activeName = ref()
 onBeforeMount(() => {
   activeName.value = route.path
   userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
-  avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
   nickname.value = userInfo.value.nickname
   signature.value = userInfo.value.signature || '个性签名'
   follow.value = userInfo.value.followingCount
   fans.value = userInfo.value.followerCount
+  if (userInfo.value.avatar) {
+    avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  }
 })
 //返回
 const handleBack = () => {
@@ -224,6 +231,7 @@ const onSelect = (option: any) => {
   }
 }
 .title-group {
+  margin-top: j(20);
   display: flex;
   flex-direction: column;
   justify-content: space-around;

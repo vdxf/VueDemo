@@ -116,6 +116,26 @@ const router = createRouter({
       meta: { title: '编辑资料' }
     },
     {
+      path: '/followfans',
+      name: 'FollowFans',
+      component: () => import('@/views/FollowFans.vue'),
+      meta: { title: '关注与粉丝' },
+      children: [
+        {
+          path: 'follow',
+          name: 'Follow',
+          component: () => import('@/views/FollowView.vue'),
+          meta: { title: '关注' }
+        },
+        {
+          path: 'fans',
+          name: 'Fans',
+          component: () => import('@/views/FansView.vue'),
+          meta: { title: '粉丝' }
+        }
+      ]
+    },
+    {
       path: '/:pathMatch(.*)',
       name: 'error',
       component: () => import('@/views/NotFount.vue'),
