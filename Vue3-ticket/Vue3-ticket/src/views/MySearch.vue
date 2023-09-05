@@ -38,7 +38,10 @@
 <script setup lang="ts">
 import { ref, toRaw } from 'vue'
 import { doTabulation } from '@/api/index'
+import { onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const keyword = ref('')
 const keyword1 = ref('')
 const imageList = ref<any>([])
@@ -49,13 +52,23 @@ const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
 const view = ref()
+const authorId = ref()
+const id = ref()
+
+onBeforeMount(() => {
+  authorId.value = route.query.id
+  if (authorId.value) {
+    id.value = authorId.value
+  } else {
+    id.value = window.localStorage.getItem('userId')
+  }
+})
 const reqDataList = (current: number) => {
-  const id = window.localStorage.getItem('userId')
   doTabulation({
     current: current,
     length: 10,
     keyword: keyword1.value,
-    userId: id
+    userId: id.value
   })
     .then((result) => {
       const { list, count } = result

@@ -35,7 +35,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { doLogin } from '@/api/index'
+import { doLogin, doUserDetails } from '@/api/index'
 import router from '@/router'
 import { doUserList } from '@/api'
 import { ref, toRaw } from 'vue'
@@ -48,7 +48,7 @@ const userId = ref()
 const handleBack = () => {
   router.go(-1)
 }
-// 找回密码
+// 忘记密码
 const handleRetrievePassword = () => {
   router.push('retrievePassword')
 }
@@ -81,9 +81,21 @@ const handleUserList = () => {
       console.log(userInfo.value)
       userId.value = toRaw(userInfo.value).id
       window.localStorage.setItem('userId', userId.value)
+      handleUserDetail()
     })
     .catch((error) => {
       alert(error.data.msg)
+    })
+}
+// 获取用户详情
+const handleUserDetail = () => {
+  const id = window.localStorage.getItem('userId')
+  doUserDetails(id)
+    .then((result) => {
+      window.localStorage.setItem('userInfo', JSON.stringify(result))
+    })
+    .catch((error) => {
+      console.log(error)
     })
 }
 //用户协议

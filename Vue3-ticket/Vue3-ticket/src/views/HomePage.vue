@@ -3,9 +3,7 @@
     <div class="header-content">
       <img src="@/assets/images/desktop_4.jpg" alt="img" />
       <div class="back" @click="handleBack">&lt;</div>
-      <router-link to="/mysearch">
-        <div class="search"><i></i></div>
-      </router-link>
+      <div class="search" @click="handleSearch"><i></i></div>
       <van-cell @click="showShare = true" class="share" />
       <van-share-sheet
         v-model:show="showShare"
@@ -38,9 +36,13 @@
               <p>获赞</p>
             </div>
           </div>
-          <router-link to="/edit" class="edit-button">
+          <router-link to="/edit" class="edit-button" v-if="!authorId">
             <button>编辑资料</button>
           </router-link>
+          <div class="trand-button" v-else>
+            <button class="trand" v-if="!isFollow" @click.stop="handleTrand">+ 关注</button>
+            <button class="tranded" v-else @click.stop="handleTrand">已关注</button>
+          </div>
         </div>
       </div>
       <div class="info-nickname">
@@ -64,7 +66,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { onBeforeMount } from 'vue'
 import { ref } from 'vue'
-import { url } from 'inspector'
+import { doCancelTrand, doTrand, doUserDetails } from '@/api'
 const route = useRoute()
 const router = useRouter()
 const fans = ref('-')
@@ -75,20 +77,57 @@ const signature = ref('')
 const avatarUrl = ref()
 const userInfo = ref()
 const activeName = ref()
+
+const authorId = ref()
+const authorInfo = ref()
+const isFollow = ref()
+
 onBeforeMount(() => {
-  activeName.value = route.path
-  userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
-  nickname.value = userInfo.value.nickname
-  signature.value = userInfo.value.signature || '个性签名'
-  follow.value = userInfo.value.followingCount
-  fans.value = userInfo.value.followerCount
-  if (userInfo.value.avatar) {
-    avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  authorId.value = route.query.id
+  if (authorId.value) {
+    handleUserDetail()
+  } else {
+    activeName.value = route.path
+    userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
+    nickname.value = userInfo.value.nickname
+    signature.value = userInfo.value.signature || '个性签名'
+    follow.value = userInfo.value.followingCount
+    fans.value = userInfo.value.followerCount
+    if (userInfo.value.avatar) {
+      avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+    }
   }
 })
+//获取作者详情
+const handleUserDetail = () => {
+  doUserDetails(authorId.value)
+    .then((result) => {
+      authorInfo.value = result
+      nickname.value = authorInfo.value.nickname
+      signature.value = authorInfo.value.signature || '个性签名'
+      follow.value = authorInfo.value.followingCount
+      fans.value = authorInfo.value.followerCount
+      isFollow.value = authorInfo.value.isFollow // 是否关注
+      if (authorInfo.value.avatar) {
+        avatarUrl.value = 'https://img.daysnap.cn/' + authorInfo.value.avatar.filepath
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
 //返回
 const handleBack = () => {
   router.go(-1)
+}
+//搜索
+const handleSearch = () => {
+  router.push({
+    path: '/mysearch',
+    query: {
+      id: authorId.value
+    }
+  })
 }
 //分享
 const showShare = ref(false)
@@ -102,6 +141,30 @@ const options = [
 const onSelect = (option: any) => {
   showToast(option.name)
   showShare.value = false
+}
+//关注
+const handleTrand = () => {
+  if (!isFollow.value) {
+    doTrand({
+      followUserId: authorId.value
+    })
+      .then(() => {
+        handleUserDetail()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else {
+    doCancelTrand({
+      followUserId: authorId.value
+    })
+      .then(() => {
+        handleUserDetail()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -238,5 +301,22 @@ const onSelect = (option: any) => {
   font-size: j(20);
   color: #999;
   border-top: 1px solid #f1f1f1;
+}
+.trand-button {
+  height: j(30);
+  margin-top: j(10);
+  .trand,
+  .tranded {
+    height: j(30);
+    font-size: j(16);
+  }
+  .trand {
+    background-color: rgb(250, 114, 152);
+    color: #fff;
+  }
+  .tranded {
+    background-color: #ccc;
+    color: #000;
+  }
 }
 </style>

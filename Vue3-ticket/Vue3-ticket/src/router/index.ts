@@ -50,7 +50,7 @@ const router = createRouter({
       path: '/retrievePassword',
       name: 'RetrievePassword',
       component: () => import('@/views/RetrievePassword.vue'),
-      meta: { title: '找回密码' }
+      meta: { title: '忘记密码' }
     },
     {
       path: '/setup',
@@ -144,28 +144,35 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   const token = window.localStorage.getItem('token')
+router.beforeEach((to, from, next) => {
+  const token = window.localStorage.getItem('token')
 
-//   if (token) {
-//     if (to.path === '/login') {
-//       // 已登录
-//       next('/')
-//     } else {
-//       next()
-//     }
-//   } else {
-//     // 未登录
-//     if (to.path !== '/login' && to.path !== '/register') {
-//       if (to.path === '/register') {
-//         next('/register')
-//       }
-//       next('/login')
-//     } else {
-//       next()
-//     }
-//   }
-// })
+  if (token) {
+    if (to.path === '/login') {
+      // 已登录
+      next('/')
+    } else {
+      next()
+    }
+  } else {
+    // 未登录
+    if (
+      to.path !== '/login' &&
+      to.path !== '/register' &&
+      to.path !== '/retrievePassword' &&
+      to.path !== '/PrivacyPolicy' &&
+      to.path !== '/help' &&
+      to.path !== '/useragreement'
+    ) {
+      if (to.path === '/register') {
+        next('/register')
+      }
+      next('/login')
+    } else {
+      next()
+    }
+  }
+})
 router.afterEach((to, from) => {
   const { title } = to.meta || {}
   document.title = title || '立减金'

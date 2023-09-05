@@ -62,30 +62,18 @@ onBeforeMount(() => {
 })
 //登录 / 个人中心
 const handleLogin = () => {
-  if (!isToken.value) {
-    router.push('/login')
-  } else {
-    router.push('homepage')
-  }
+  router.push('homepage')
 }
 // 获取用户详情
 const handleUserDetail = () => {
-  const id = window.localStorage.getItem('userId')
-  doUserDetails(id)
-    .then((result) => {
-      window.localStorage.setItem('userInfo', JSON.stringify(result))
-      userDetail.value = result
-      nickname.value = userDetail.value.nickname
-      trend.value = userDetail.value.pictureCount
-      follow.value = userDetail.value.followingCount
-      fans.value = userDetail.value.followerCount
-      if (userDetail.value.avatar) {
-        avatarUrl.value = 'https://img.daysnap.cn/' + userDetail.value.avatar.filepath
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  userDetail.value = JSON.parse(window.localStorage.getItem('userInfo'))
+  nickname.value = userDetail.value.nickname
+  trend.value = userDetail.value.pictureCount
+  follow.value = userDetail.value.followingCount
+  fans.value = userDetail.value.followerCount
+  if (userDetail.value.avatar) {
+    avatarUrl.value = 'https://img.daysnap.cn/' + userDetail.value.avatar.filepath
+  }
 }
 //设置
 const handleSetup = () => {
@@ -93,35 +81,19 @@ const handleSetup = () => {
 }
 //动态
 const handleTrand = () => {
-  if (isToken.value) {
-    router.push('/homepage/mytrand')
-  } else {
-    router.push('/login')
-  }
+  router.push('/homepage/mytrand')
 }
 //关注
 const handleFollow = () => {
-  if (isToken.value) {
-    router.push('/followfans/follow')
-  } else {
-    router.push('/login')
-  }
+  router.push('/followfans/follow')
 }
 //粉丝
 const handleFans = () => {
-  if (isToken.value) {
-    router.push('/followfans/fans')
-  } else {
-    router.push('/login')
-  }
+  router.push('/followfans/fans')
 }
 //我的收藏
 const handleCollect = () => {
-  if (isToken.value) {
-    router.push('/homepage/mycollect')
-  } else {
-    router.push('/login')
-  }
+  router.push('/homepage/mycollect')
 }
 </script>
 

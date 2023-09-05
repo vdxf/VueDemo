@@ -72,7 +72,7 @@ export const doDelete = withLoading((id) => {
   })
 })
 
-//详情
+//图片详情
 export const doDetail = withLoading((id) => {
   return request({
     url: `/api/v1/picture/${id}`,
@@ -175,3 +175,37 @@ export const doCancelCollect = (pictureId) => {
     data: pictureId
   })
 }
+// 关注
+export const doTrand = (followUserId) => {
+  return request({
+    url: `/api/v1/relation`,
+    method: 'POST',
+    data: followUserId
+  })
+}
+
+// 取消关注
+export const doCancelTrand = (followUserId) => {
+  return request({
+    url: `/api/v1/relation`,
+    method: 'DELETE',
+    data: followUserId
+  })
+}
+
+//获取关注列表
+export const doFollowList = withLoading((data: {}) => {
+  return request({
+    url: `/api/v1/relation/follower`,
+    method: 'GET',
+    params: data
+  })
+})
+//获取粉丝列表
+export const doFansList = withLoading((data: {}) => {
+  return request({
+    url: `/api/v1/relation/following`,
+    method: 'GET',
+    params: data
+  })
+})

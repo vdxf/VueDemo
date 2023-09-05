@@ -3,7 +3,8 @@
     <!-- 头部搜索 -->
     <div class="home-header">
       <router-link to="user">
-        <vs-image :src="avatarUrl" wr="50" class="header-avatar" />
+        <vs-image :src="avatarUrl" wr="50" class="header-avatar" v-if="avatarUrl" />
+        <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
       </router-link>
       <div class="search-form">
         <van-search
@@ -36,7 +37,8 @@
           @click="handleImageDetail(item.id)"
           class="image-item"
         >
-          <vs-image :src="item.file.filepath" wr="200" alt="img" />
+          <vs-image :src="item.file.filepath" wr="200" alt="img" v-if="item.file.filepath" />
+          <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
           <div class="detail-content">
             <span>{{ item.description }}</span>
             <span><i></i>{{ item.user.nickname }}</span>
@@ -77,96 +79,6 @@ onBeforeMount(() => {
   const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
   avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.avatar.filepath
 })
-// 点赞
-const handleLike = (id: any, isLike: any) => {
-  if (!isLike) {
-    doLike({
-      pictureId: id
-    })
-      .then((result) => {
-        handleRefresh()
-        showSuccessToast('点赞成功')
-        console.log(result)
-      })
-      .catch((error) => {
-        showFailToast('点赞失败')
-        console.dir(error)
-      })
-  } else {
-    doCancellike({
-      pictureId: id
-    })
-      .then((result) => {
-        handleRefresh()
-        console.log(result)
-      })
-      .catch((error) => {
-        console.dir(error)
-      })
-  }
-}
-// 收藏
-const handleCollect = (id: any, isCollect: any) => {
-  if (!isCollect) {
-    doCollect({
-      pictureId: id
-    })
-      .then((result) => {
-        handleRefresh()
-        showSuccessToast('收藏成功')
-        console.log(result)
-      })
-      .catch((error) => {
-        showFailToast('收藏失败')
-        console.dir(error)
-      })
-  } else {
-    doCancelCollect({
-      pictureId: id
-    })
-      .then((result) => {
-        handleRefresh()
-        console.log(result)
-      })
-      .catch((error) => {
-        console.dir(error)
-      })
-  }
-}
-//更新
-const handleUpdataImage = (item: any) => {
-  const data = toRaw(item)
-  router.push({
-    path: '/imagecreate',
-    query: {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      type: data.type,
-      fileId: data.file.id,
-      imgUrl: data.file.filepath
-    }
-  })
-}
-//删除
-const handleDeleteImage = (id: any) => {
-  showConfirmDialog({
-    title: '温馨提示',
-    message: '确认要删除吗'
-  })
-    .then(() => {
-      doDelete(id)
-        .then(() => {
-          reqDataList(1)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    })
-    .catch(() => {
-      // on cancel
-    })
-}
 //跳转图片详情
 const handleImageDetail = (id: any) => {
   router.push({

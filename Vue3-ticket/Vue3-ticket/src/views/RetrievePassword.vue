@@ -2,28 +2,78 @@
   <div class="retrieve-view">
     <van-nav-bar title="找回密码" left-arrow @click-left="handleBack" />
     <div class="bind-email">
-      <span>绑定邮箱</span>
-      <input type="email" placeholder="请输入绑定邮箱" v-model="email" />
+      <label>邮箱：<input type="email" v-model="email" placeholder="请输入绑定的邮箱" /></label>
     </div>
+
+    <div class="form-item">
+      邮箱验证码：<input
+        type="text"
+        placeholder="请输入邮箱验证码"
+        v-model.trim="captcha"
+        required
+        maxlength="6"
+      />
+      <button @click="handleCode" v-if="!sendCode">发送验证码</button>
+      <van-count-down :time="time" format="ss" @finish="handleFinish" class="send-code" v-else />
+    </div>
+
+    <label class="reset-password"
+      >新密码：<input type="text" v-model="resetPassword" placeholder="请输入新的密码"
+    /></label>
     <button
+      @click.stop="handleReset"
       class="retrieve-next"
-      :class="{ 'retrieve-next-active': email }"
-      @click="handleRetrievePassword"
+      :class="{ 'retrieve-next-active': email && captcha && resetPassword }"
     >
-      下一步
+      提交
     </button>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import router from '@/router'
+import { doEmailSend, doResetPassword } from '@/api'
 
-const email = ref()
+const email = ref('2532499815@qq.com')
+const resetPassword = ref()
+const captcha = ref('')
+let sendCode = ref(false)
+const time = ref(60 * 1000)
 const handleBack = () => {
   router.go(-1)
 }
 const handleRetrievePassword = () => {}
+//发送验证码
+const handleCode = () => {
+  sendCode.value = true
+  doEmailSend({ email: email.value, type: 'reset-password' })
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => {
+      console.dir(error)
+    })
+}
+//重置密码
+const handleReset = () => {
+  doResetPassword({
+    email: email.value,
+    captcha: captcha.value,
+    resetPassword: resetPassword.value
+  })
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => {
+      console.dir(error)
+    })
+}
+//倒计时
+const handleFinish = () => {
+  sendCode.value = false
+}
 </script>
+
 <style scoped lang="scss">
 @import '@/assets/sass/define.scss';
 .retrieve-view {
@@ -54,5 +104,38 @@ const handleRetrievePassword = () => {}
 }
 .retrieve-next-active {
   background-color: #ff80af;
+}
+.form-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #fff;
+  padding: 0 j(10);
+  height: j(50);
+  font-size: j(16);
+  input {
+    flex: 1;
+  }
+  button {
+    height: j(40);
+    border-radius: j(10);
+    font-size: j(14);
+    background-color: red;
+    color: #fafafa;
+    border: none;
+  }
+}
+.reset-password {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: j(20);
+  font-size: j(16);
+  height: j(40);
+  background-color: #fff;
+  padding: 0 j(10);
+  input {
+    flex: 1;
+  }
 }
 </style>
