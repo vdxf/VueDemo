@@ -1,30 +1,48 @@
 <template>
   <div class="c-view">
+    <van-nav-bar
+      left-arrow
+      class="edit-header"
+      :border="false"
+      :clickable="true"
+      @click-left="handleBack"
+      @click-right="handleSearch"
+    >
+      <template #right>
+        <van-icon name="search" size="18" />
+      </template>
+    </van-nav-bar>
     <div class="view-content">
       <vs-image :src="avatarUrl" alt="img" v-if="avatarUrl" />
       <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
     </div>
-    <div class="user-content">
-      <div class="user-info" @click="handleHomepage">
+    <div class="user-info" @click="handleHomepage">
+      <div class="header-info">
         <vs-image :src="authoravatar" alt="img" v-if="authoravatar" class="user-avatar" />
         <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
         <span>{{ authorNickname }}</span>
-        <button class="trand" v-if="!isFollow" @click.stop="handleTrand">+ 关注</button>
-        <button class="tranded" v-else @click.stop="handleTrand">已关注</button>
+        <div class="trand-group" v-if="trandShow">
+          <button class="trand" v-if="!isFollow" @click.stop="handleTrand">+ 关注</button>
+          <button class="tranded" v-else @click.stop="handleTrand">已关注</button>
+        </div>
       </div>
       <p>{{ description }}</p>
-      <div class="button-group">
-        <span class="like-button" @click="handleLike" :class="{ 'like-button-active': isLike }"
-          ><span>{{ likeCount }}</span>
-        </span>
-        <span
-          class="collect-button"
-          @click="handleCollect"
-          :class="{ 'collect-button-active': isCollect }"
-        >
-          <span>{{ collectCount }}</span>
-        </span>
-      </div>
+    </div>
+    <div
+      class="like-button group-item"
+      @click="handleLike"
+      :class="{ 'like-button-active': isLike }"
+    >
+      <i></i>
+      <span>{{ likeCount }}</span>
+    </div>
+    <div
+      class="collect-button group-item"
+      @click="handleCollect"
+      :class="{ 'collect-button-active': isCollect }"
+    >
+      <i></i>
+      <span>{{ collectCount }}</span>
     </div>
   </div>
 </template>
@@ -59,10 +77,19 @@ const isCollect = ref(false)
 const isFollow = ref()
 const pictureId = ref()
 const route = useRoute()
+const trandShow = ref()
 
 onBeforeMount(() => {
   handleDetail()
 })
+//返回
+const handleBack = () => {
+  router.go(-1)
+}
+//搜索
+const handleSearch = () => {
+  router.push('search')
+}
 //获取图片详情
 const handleDetail = () => {
   pictureId.value = route.query.id
@@ -86,14 +113,20 @@ const handleDetail = () => {
 }
 //获取作者详情
 const handleUserDetail = () => {
-  doUserDetails(authorId.value)
-    .then((result) => {
-      authorInfo.value = result
-      isFollow.value = authorInfo.value.isFollow // 是否关注
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  const id = window.localStorage.getItem('userId')
+  if (authorId.value !== id) {
+    doUserDetails(authorId.value)
+      .then((result) => {
+        authorInfo.value = result
+        trandShow.value = true
+        isFollow.value = authorInfo.value.isFollow // 是否关注
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else {
+    trandShow.value = false
+  }
 }
 //关注
 const handleTrand = () => {
@@ -184,44 +217,67 @@ const handleHomepage = () => {
 @import '@/assets/sass/define.scss';
 
 .c-view {
-  padding: j(10);
   height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #000;
+}
+.edit-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  color: #fff;
+  .van-nav-bar,
+  .van-icon {
+    color: #fff;
+  }
 }
 .view-content {
-  margin-bottom: j(20);
+  width: 100vw;
+  height: j(200);
   img {
     width: 100%;
     height: 100%;
   }
 }
-.user-content {
+.user-info {
+  position: fixed;
+  bottom: j(40);
+  left: j(20);
+  width: 80vw;
   display: flex;
   flex-direction: column;
   p {
-    font-size: j(18);
-    margin-bottom: j(20);
+    font-size: j(16);
+    color: #fff;
   }
 }
-.user-info {
+.header-info {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  margin-bottom: j(20);
-  position: relative;
+  margin-bottom: j(10);
+  color: rgb(250, 114, 152);
   img {
     display: block;
-    width: j(50);
-    height: j(50);
+    width: j(40);
+    height: j(40);
     border-radius: 50%;
-    margin-right: j(30);
+    margin-right: j(10);
   }
 }
 .trand,
 .tranded {
-  position: absolute;
-  right: j(20);
-  width: j(80);
-  height: j(30);
-  font-size: j(16);
+  width: j(60);
+  height: j(20);
+  line-height: j(20);
+  border-radius: j(15);
+  font-size: j(12);
+  margin-left: j(20);
 }
 .trand {
   background-color: rgb(250, 114, 152);
@@ -239,24 +295,43 @@ const handleHomepage = () => {
     flex-direction: column;
   }
 }
+.group-item {
+  position: fixed;
+  right: j(20);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  i {
+    display: block;
+    width: j(30);
+    height: j(30);
+    background-size: auto;
+    margin-bottom: j(10);
+  }
+  span {
+    color: #fff;
+  }
+}
 .like-button {
-  display: block;
-  width: j(30);
-  height: j(30);
-  background: url(@/assets/images/like.svg);
-  background-size: auto;
+  i {
+    background: url(@/assets/images/like.svg);
+  }
+  bottom: j(180);
 }
 .like-button-active {
-  background: url(@/assets/images/likeactive.svg);
+  i {
+    background: url(@/assets/images/likeactive.svg);
+  }
 }
 .collect-button {
-  display: block;
-  width: j(30);
-  height: j(30);
-  background: url(@/assets/images/collect.svg);
-  background-size: auto;
+  bottom: j(100);
+  i {
+    background: url(@/assets/images/collect.svg);
+  }
 }
 .collect-button-active {
-  background: url(@/assets/images/collectactive.svg);
+  i {
+    background: url(@/assets/images/collectactive.svg);
+  }
 }
 </style>

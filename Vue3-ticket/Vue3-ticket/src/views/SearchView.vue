@@ -36,12 +36,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw } from 'vue'
+import { ref, toRaw, watch } from 'vue'
 import { doTabulation } from '@/api/index'
-import { onBeforeMount } from 'vue'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
 const keyword = ref('')
 const keyword1 = ref('')
 const imageList = ref<any>([])
@@ -52,17 +49,8 @@ const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
 const view = ref()
-const authorId = ref()
 const id = ref()
 
-onBeforeMount(() => {
-  authorId.value = route.query.id
-  if (authorId.value) {
-    id.value = authorId.value
-  } else {
-    id.value = window.localStorage.getItem('userId')
-  }
-})
 const reqDataList = (current: number) => {
   doTabulation({
     current: current,
@@ -96,6 +84,10 @@ const handleSearch = () => {
   keyword1.value = keyword.value
   handleRefresh()
 }
+watch(keyword, (nv) => {
+  keyword1.value = nv
+  handleRefresh()
+})
 </script>
 
 <style lang="scss" scoped>

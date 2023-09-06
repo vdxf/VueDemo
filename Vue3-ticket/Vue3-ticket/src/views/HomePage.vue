@@ -53,7 +53,17 @@
         <span>详情</span>
       </div>
       <van-tabs v-model:active="activeName" class="title-group" routes>
-        <van-tab title="主页" name="/homepage/myhome" replace to="/homepage/myhome"></van-tab>
+        <van-tab
+          title="主页"
+          name="/homepage/myhome"
+          replace
+          :to="{
+            path: '/homepage/myhome',
+            query: {
+              id: id
+            }
+          }"
+        ></van-tab>
         <van-tab title="动态" name="/homepage/mytrand" replace to="/homepage/mytrand"></van-tab>
         <van-tab title="收藏" name="/homepage/mycollect" replace to="/homepage/mycollect"></van-tab>
       </van-tabs>
@@ -79,6 +89,7 @@ const userInfo = ref()
 const activeName = ref()
 
 const authorId = ref()
+const id = ref()
 const authorInfo = ref()
 const isFollow = ref()
 
@@ -86,9 +97,11 @@ onBeforeMount(() => {
   authorId.value = route.query.id
   if (authorId.value) {
     handleUserDetail()
+    id.value = authorId.value
   } else {
     activeName.value = route.path
     userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
+    id.value = userInfo.value.id
     nickname.value = userInfo.value.nickname
     signature.value = userInfo.value.signature || '个性签名'
     follow.value = userInfo.value.followingCount

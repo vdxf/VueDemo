@@ -120,7 +120,7 @@ const handleFinish = () => {
     height: j(40);
     border-radius: j(10);
     font-size: j(14);
-    background-color: red;
+    background-color: #ccc;
     color: #fafafa;
     border: none;
   }

@@ -47,6 +47,12 @@ const router = createRouter({
       meta: { title: '相片详情' }
     },
     {
+      path: '/search',
+      name: 'SearchView',
+      component: () => import('@/views/SearchView.vue'),
+      meta: { title: '搜索' }
+    },
+    {
       path: '/retrievePassword',
       name: 'RetrievePassword',
       component: () => import('@/views/RetrievePassword.vue'),
@@ -162,6 +168,7 @@ router.beforeEach((to, from, next) => {
       to.path !== '/retrievePassword' &&
       to.path !== '/PrivacyPolicy' &&
       to.path !== '/help' &&
+      to.path !== '/user' &&
       to.path !== '/useragreement'
     ) {
       if (to.path === '/register') {

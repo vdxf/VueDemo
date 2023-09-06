@@ -26,23 +26,95 @@
           <p>粉丝</p>
         </div>
       </div>
-      <div class="my-collect" @click.stop="handleCollect">
-        <i></i>
-        <span>我的收藏</span>
-      </div>
     </div>
-    <div class="more-srevice">
-      <p>更多服务</p>
-      <div class="set-up">
-        <span @click="handleSetup">设置</span>
-        <i>></i>
+    <div class="user-content">
+      <div class="info-group">
+        <div class="my-download" @click.stop="$emit('null')">
+          <i></i>
+          <span>离线下载</span>
+        </div>
+        <div class="my-history" @click.stop="$emit('null')">
+          <i></i>
+          <span>历史记录</span>
+        </div>
+        <div class="my-collect" @click.stop="handleCollect">
+          <i></i>
+          <span>我的收藏</span>
+        </div>
+        <div class="my-next" @click.stop="$emit('null')">
+          <i></i>
+          <span>稍后再看</span>
+        </div>
+      </div>
+      <div class="recommen-srevice">
+        <p>推荐服务</p>
+        <div class="recommen-group">
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">我的课程</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">免流量服务</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">个性装扮</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">邀好友转红包</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">我的钱包</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">我的课程</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">免流量服务</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">个性装扮</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">邀好友转红包</span>
+          </div>
+          <div class="recommen-item">
+            <i></i>
+            <span @click="$emit('null')">我的钱包</span>
+          </div>
+        </div>
+      </div>
+      <div class="more-srevice">
+        <p>更多服务</p>
+        <div class="set-up">
+          <span @click="$emit('null')">联系客服</span>
+          <i>></i>
+        </div>
+        <div class="set-up">
+          <span @click="$emit('null')">听视频</span>
+          <i>></i>
+        </div>
+        <div class="set-up">
+          <span @click="$emit('null')">青少年守护</span>
+          <i>></i>
+        </div>
+        <div class="set-up">
+          <span @click="handleSetup">设置</span>
+          <i>></i>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { doUserDetails } from '@/api'
 import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -101,7 +173,12 @@ const handleCollect = () => {
 @import '@/assets/sass/define.scss';
 
 .c-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   padding: j(40) j(10);
+  background-color: #fafafa;
+  overflow: hidden;
 }
 .user-avatar,
 .login-view {
@@ -135,6 +212,20 @@ const handleCollect = () => {
     font-size: j(16);
     margin-left: j(10);
   }
+  span {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  span::after {
+    content: '';
+    margin-left: j(10);
+    display: block;
+    width: j(15);
+    height: j(15);
+    background: url(@/assets/images/myedit.svg) center center no-repeat;
+    background-size: j(20) j(20);
+  }
 }
 .user-info {
   margin-top: j(10);
@@ -150,13 +241,13 @@ const handleCollect = () => {
   flex-direction: column;
   align-items: center;
   span {
-    font-size: j(12);
+    font-size: j(16);
     color: #333;
-    margin-bottom: j(10);
+    margin-bottom: j(5);
   }
   p {
-    font-size: j(14);
-    color: #ccc;
+    font-size: j(12);
+    color: #aaa;
   }
 }
 .user-follow {
@@ -164,23 +255,55 @@ const handleCollect = () => {
   border-right: 1px solid #ccc;
   padding: 0 j(50);
 }
-.my-collect {
+.info-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 j(20);
+}
+.my-download,
+.my-collect,
+.my-history,
+.my-next {
   margin-top: j(10);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   color: #666;
   i {
     display: block;
     width: j(25);
     height: j(25);
-    background: url(@/assets/images/trand.svg) center center no-repeat;
-    background-size: j(25) j(25);
     margin-bottom: j(6);
   }
 }
-.more-srevice {
+.my-download {
+  i {
+    background: url(@/assets/images/mydownload.svg) center center no-repeat;
+    background-size: j(40) j(40);
+  }
+}
+.my-collect {
+  i {
+    background: url(@/assets/images/trand.svg) center center no-repeat;
+    background-size: j(25) j(25);
+  }
+}
+.my-history {
+  i {
+    background: url(@/assets/images/myhistory.svg) center center no-repeat;
+    background-size: j(30) j(30);
+  }
+}
+.my-next {
+  i {
+    background: url(@/assets/images/mynext.svg) center center no-repeat;
+    background-size: j(25) j(25);
+  }
+}
+.more-srevice,
+.recommen-srevice {
   margin-top: j(20);
   display: flex;
   flex-direction: column;
@@ -188,6 +311,26 @@ const handleCollect = () => {
     font-weight: 500;
     font-size: j(14);
     margin: j(20) 0;
+  }
+}
+.recommen-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.recommen-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  margin-bottom: j(10);
+  i {
+    display: block;
+    width: j(30);
+    height: j(30);
+    background: url(@/assets/images/recommen.svg) center center no-repeat;
+    background-size: auto auto;
+    margin-bottom: j(4);
   }
 }
 .set-up {
@@ -217,5 +360,10 @@ const handleCollect = () => {
     font-size: j(20);
     color: #ccc;
   }
+}
+.user-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: j(20);
 }
 </style>

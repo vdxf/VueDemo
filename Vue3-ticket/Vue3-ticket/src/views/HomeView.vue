@@ -9,14 +9,10 @@
       <div class="search-form">
         <van-search
           v-model="keyword"
-          show-action
           placeholder="请输入搜索关键词"
-          @search="handleSearch"
+          @focus="handleSearch"
           shape="round"
         >
-          <template #action>
-            <div class="search-button" @click="handleSearch">搜索</div>
-          </template>
         </van-search>
       </div>
     </div>
@@ -29,21 +25,22 @@
         v-model:error="error"
         error-text="请求失败，点击重新加载"
         @load="handleLoad"
-        class="image-list"
       >
-        <van-cell
-          v-for="item in list"
-          :key="item.id"
-          @click="handleImageDetail(item.id)"
-          class="image-item"
-        >
-          <vs-image :src="item.file.filepath" wr="200" alt="img" v-if="item.file.filepath" />
-          <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
-          <div class="detail-content">
-            <span>{{ item.description }}</span>
-            <span><i></i>{{ item.user.nickname }}</span>
-          </div>
-        </van-cell>
+        <div class="image-list">
+          <van-cell
+            v-for="item in list"
+            :key="item.id"
+            @click="handleImageDetail(item.id)"
+            class="image-item"
+          >
+            <vs-image :src="item.file.filepath" wr="200" alt="img" v-if="item.file.filepath" />
+            <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
+            <div class="detail-content">
+              <span>{{ item.description }}</span>
+              <span><i></i>{{ item.user.nickname }}</span>
+            </div>
+          </van-cell>
+        </div>
       </van-list>
     </van-pull-refresh>
   </div>
@@ -51,15 +48,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, toRaw } from 'vue'
-import { showConfirmDialog, showSuccessToast, showFailToast } from 'vant'
-import {
-  doCancelCollect,
-  doCancellike,
-  doCollect,
-  doDelete,
-  doLike,
-  doTabulation
-} from '@/api/index'
+import { doTabulation } from '@/api/index'
 import VsImage from '@/components/VsImage.vue'
 import { useRouter } from 'vue-router'
 
@@ -121,8 +110,7 @@ const handleLoad = () => {
 }
 //搜索
 const handleSearch = () => {
-  keyword1.value = keyword.value
-  handleRefresh()
+  router.push('search')
 }
 </script>
 
@@ -132,52 +120,50 @@ const handleSearch = () => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: j(10);
+  overflow: hidden;
+  padding-top: j(10);
+  padding-bottom: j(50);
 }
 .home-header {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  padding-left: j(10);
 }
 .header-avatar {
   display: block;
-  width: j(50);
-  height: j(50);
+  width: j(40);
+  height: j(40);
   border-radius: 50%;
 }
 .search-form {
   flex: 1;
 }
-.search-button {
-  width: j(40);
-  height: j(24);
-  line-height: j(24);
-  text-align: center;
-  border-radius: j(10);
-  background-color: red;
-  color: #fff;
-}
 .content {
+  margin-top: j(10);
   flex: 1;
   overflow-y: auto;
+  background-color: #f1f1f1;
 }
 .image-list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  padding-bottom: j(100);
+  padding-bottom: j(40);
   position: relative;
-  .van-list-finished-text {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: j(60);
-  }
+}
+.van-list_finished-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 .image-item {
-  width: 50%;
-  padding: j(5);
+  width: 48%;
+  margin: j(3);
   display: flex;
   flex-direction: column;
+  padding: 0;
   img {
     display: block;
     width: 100%;
@@ -185,23 +171,35 @@ const handleSearch = () => {
   }
 }
 .detail-content {
+  height: j(70);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   text-align: left;
+  margin: j(4);
   span {
-    white-space: nowrap;
+    font-size: j(16);
+    color: #000;
+    &:first-child {
+      white-space: pre-line;
+      height: j(50);
+      overflow: hidden;
+    }
     &:last-child {
       display: flex;
       flex-direction: row;
       align-items: center;
+      color: #ccc;
+      font-size: j(12);
     }
   }
   i {
     display: block;
-    width: j(20);
-    height: j(20);
+    width: j(16);
+    height: j(16);
     background: url(@/assets/images/UP.svg);
     background-size: 100% 100%;
+    margin-right: j(4);
   }
 }
 </style>
