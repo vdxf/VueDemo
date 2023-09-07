@@ -169,6 +169,7 @@ router.beforeEach((to, from, next) => {
       to.path !== '/PrivacyPolicy' &&
       to.path !== '/help' &&
       to.path !== '/user' &&
+      to.path !== '/home' &&
       to.path !== '/useragreement'
     ) {
       if (to.path === '/register') {

@@ -1,74 +1,84 @@
 <template>
   <div class="homepage-view">
-    <div class="header-content">
-      <img src="@/assets/images/desktop_4.jpg" alt="img" />
-      <div class="back" @click="handleBack">&lt;</div>
-      <div class="search" @click="handleSearch"><i></i></div>
-      <van-cell @click="showShare = true" class="share" />
-      <van-share-sheet
-        v-model:show="showShare"
-        title="立即分享给好友"
-        :options="options"
-        @select="onSelect"
-      />
-      <div></div>
-    </div>
-    <div class="homepage-content">
-      <div class="info-header">
-        <vs-image :src="avatarUrl" class="avatar-info" v-if="avatarUrl" />
-        <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
-        <div class="info-header-content">
-          <div class="info-header-item">
-            <router-link to="/followfans/fans">
-              <div class="fans">
-                <span>{{ fans }}</span>
-                <p>粉丝</p>
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+      <div class="header-content">
+        <img src="@/assets/images/desktop_4.jpg" alt="img" />
+        <div class="back" @click="handleBack">&lt;</div>
+        <div class="search" @click="handleSearch"><i></i></div>
+        <van-cell @click="showShare = true" class="share" />
+        <van-share-sheet
+          v-model:show="showShare"
+          title="立即分享给好友"
+          :options="options"
+          @select="onSelect"
+        />
+        <div></div>
+      </div>
+      <div class="homepage-content">
+        <div class="info-header">
+          <vs-image :src="avatarUrl" wr="100" class="avatar-info" v-if="avatarUrl" />
+          <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
+          <div class="info-header-content">
+            <div class="info-header-item">
+              <router-link to="/followfans/fans">
+                <div class="fans">
+                  <span>{{ fans }}</span>
+                  <p>粉丝</p>
+                </div>
+              </router-link>
+              <router-link to="/followfans/follow">
+                <div class="follow">
+                  <span>{{ follow }}</span>
+                  <p>关注</p>
+                </div>
+              </router-link>
+              <div class="like">
+                <span>{{ like }}</span>
+                <p>获赞</p>
               </div>
+            </div>
+            <router-link to="/edit" class="edit-button" v-if="!authorId || authorId === id">
+              <button>编辑资料</button>
             </router-link>
-            <router-link to="/followfans/follow">
-              <div class="follow">
-                <span>{{ follow }}</span>
-                <p>关注</p>
-              </div>
-            </router-link>
-            <div class="like">
-              <span>{{ like }}</span>
-              <p>获赞</p>
+            <div class="trand-button" v-else>
+              <button class="trand" v-if="!isFollow" @click.stop="handleTrand">+ 关注</button>
+              <button class="tranded" v-else @click.stop="handleTrand">已关注</button>
             </div>
           </div>
-          <router-link to="/edit" class="edit-button" v-if="!authorId">
-            <button>编辑资料</button>
-          </router-link>
-          <div class="trand-button" v-else>
-            <button class="trand" v-if="!isFollow" @click.stop="handleTrand">+ 关注</button>
-            <button class="tranded" v-else @click.stop="handleTrand">已关注</button>
-          </div>
+        </div>
+        <div class="info-nickname">
+          <p>{{ nickname }}</p>
+        </div>
+        <div class="info-signature">
+          <p>{{ signature }}</p>
+          <span>详情</span>
         </div>
       </div>
-      <div class="info-nickname">
-        <p>{{ nickname }}</p>
+      <div class="list">
+        <van-tabs v-model:active="activeName" class="title-group" routes>
+          <van-tab
+            title="主页"
+            name="/homepage/myhome"
+            replace
+            :to="{
+              path: '/homepage/myhome',
+              query: {
+                id: id
+              }
+            }"
+          >
+          </van-tab>
+          <van-tab title="动态" name="/homepage/mytrand" replace to="/homepage/mytrand"></van-tab>
+          <van-tab
+            title="收藏"
+            name="/homepage/mycollect"
+            replace
+            to="/homepage/mycollect"
+          ></van-tab>
+        </van-tabs>
+        <router-view></router-view>
       </div>
-      <div class="info-signature">
-        <p>{{ signature }}</p>
-        <span>详情</span>
-      </div>
-      <van-tabs v-model:active="activeName" class="title-group" routes>
-        <van-tab
-          title="主页"
-          name="/homepage/myhome"
-          replace
-          :to="{
-            path: '/homepage/myhome',
-            query: {
-              id: id
-            }
-          }"
-        ></van-tab>
-        <van-tab title="动态" name="/homepage/mytrand" replace to="/homepage/mytrand"></van-tab>
-        <van-tab title="收藏" name="/homepage/mycollect" replace to="/homepage/mycollect"></van-tab>
-      </van-tabs>
-    </div>
-    <router-view></router-view>
+    </van-pull-refresh>
   </div>
 </template>
 <script lang="ts" setup>
@@ -87,30 +97,42 @@ const signature = ref('')
 const avatarUrl = ref()
 const userInfo = ref()
 const activeName = ref()
-
+const loading = ref(false)
 const authorId = ref()
 const id = ref()
 const authorInfo = ref()
 const isFollow = ref()
 
+const onRefresh = () => {
+  setTimeout(() => {
+    loading.value = false
+  }, 1000)
+}
 onBeforeMount(() => {
   authorId.value = route.query.id
+  activeName.value = route.path
+  id.value = window.localStorage.getItem('userId')
   if (authorId.value) {
-    handleUserDetail()
-    id.value = authorId.value
-  } else {
-    activeName.value = route.path
-    userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
-    id.value = userInfo.value.id
-    nickname.value = userInfo.value.nickname
-    signature.value = userInfo.value.signature || '个性签名'
-    follow.value = userInfo.value.followingCount
-    fans.value = userInfo.value.followerCount
-    if (userInfo.value.avatar) {
-      avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+    if (authorId.value === id.value) {
+      userDetail()
+    } else {
+      handleUserDetail()
     }
+  } else {
+    userDetail()
   }
 })
+
+const userDetail = () => {
+  userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
+  nickname.value = userInfo.value.nickname
+  signature.value = userInfo.value.signature || '个性签名'
+  follow.value = userInfo.value.followingCount
+  fans.value = userInfo.value.followerCount
+  if (userInfo.value.avatar) {
+    avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  }
+}
 //获取作者详情
 const handleUserDetail = () => {
   doUserDetails(authorId.value)
@@ -295,7 +317,7 @@ const handleTrand = () => {
   }
 }
 .info-signature {
-  margin: j(10);
+  padding: j(10);
   display: flex;
   justify-content: space-between;
   p {
@@ -306,8 +328,12 @@ const handleTrand = () => {
     color: #5078cf;
   }
 }
+.list {
+  position: relative;
+}
 .title-group {
-  margin-top: j(20);
+  position: sticky;
+  top: j(300);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -317,7 +343,6 @@ const handleTrand = () => {
 }
 .trand-button {
   height: j(30);
-  margin-top: j(10);
   .trand,
   .tranded {
     height: j(30);
@@ -328,6 +353,7 @@ const handleTrand = () => {
     color: #fff;
   }
   .tranded {
+    border: none;
     background-color: #ccc;
     color: #000;
   }

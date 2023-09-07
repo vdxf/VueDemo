@@ -19,6 +19,7 @@ const handleBack = () => {
 const handleExit = () => {
   window.localStorage.removeItem('token')
   window.localStorage.removeItem('userId')
+  window.localStorage.removeItem('userInfo')
   router.replace('/login')
 }
 </script>

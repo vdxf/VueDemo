@@ -29,7 +29,6 @@ const route = useRoute()
 const authorId = ref()
 const id = ref()
 
-const keyword = ref('')
 const keyword1 = ref('')
 const imageList = ref<any>([])
 const list = ref(toRaw(imageList))

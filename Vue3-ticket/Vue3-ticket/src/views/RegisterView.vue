@@ -58,36 +58,52 @@ const password = ref('')
 const captcha = ref('')
 let sendCode = ref(false)
 const time = ref(60 * 1000)
-
+//邮箱验证
+const isEmail = (val: string) => {
+  return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(val)
+}
+//邮箱验证码
 const handleCode = () => {
-  sendCode.value = true
-  doEmailSend({ email: email.value, type: 'register' })
-    .then((result) => {
-      console.log(result)
-    })
-    .catch((error) => {
-      alert(error.data.msg)
-    })
+  if (isEmail(email.value)) {
+    sendCode.value = true
+    doEmailSend({ email: email.value, type: 'register' })
+      .then((result) => {
+        console.log(result)
+      })
+      .catch((error) => {
+        alert(error.data.msg)
+      })
+  } else {
+    alert('邮箱格式错误')
+  }
 }
+//注册
 const handleRegister = () => {
-  doRegister({
-    nickname: nickname.value,
-    email: email.value,
-    password: password.value,
-    captcha: captcha.value
-  })
-    .then((result) => {
-      router.push('login')
-      console.log(result)
-    })
-    .catch((error) => {
-      alert(error.data.msg)
-    })
+  if (nickname.value && email.value && password.value && captcha.value) {
+    if (isEmail(email.value)) {
+      doRegister({
+        nickname: nickname.value,
+        email: email.value,
+        password: password.value,
+        captcha: captcha.value
+      })
+        .then((result) => {
+          router.push('login')
+          console.log(result)
+        })
+        .catch((error) => {
+          alert(error.data.msg)
+        })
+    } else {
+      alert('邮箱格式错误')
+    }
+  }
 }
-
+//倒计时
 const handleFinish = () => {
   sendCode.value = false
 }
+//返回
 const handleBack = () => {
   router.go(-1)
 }

@@ -1,53 +1,40 @@
 <template>
   <div class="section-content">
-    <i @click.stop="handleColse"></i>
-    <label class="choose-image">
-      <p>请选择要上传的图片：</p>
-      <vs-image :src="imgUrl" alt="img" v-if="imgUrl" />
-      <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
-      <input type="file" @change="handleFiles" style="opacity: 0" />
-    </label>
-    <div class="image-title">
-      <p>请填写图片的标题：</p>
-      <input type="text" placeholder="请输入图片的标题" v-model="title" />
-    </div>
-    <div class="image-button-group">
-      <p>请选择图片上传类型：</p>
-      <div class="image-type">
-        <label>
-          <input
-            type="radio"
-            id="public"
-            name="image"
-            value="public"
-            v-model="type"
-            @change="handleType"
-          />公开的
-        </label>
-        <label>
-          <input
-            type="radio"
-            id="private"
-            name="image"
-            value="private"
-            v-model="type"
-            @change="handleType"
-          />私密的
-        </label>
+    <van-nav-bar title="上传图片" left-arrow @click-left="handleColse" />
+    <div class="upload-image">
+      <label class="image-content">
+        <vs-image :src="imgUrl" alt="img" v-if="imgUrl" />
+        <div class="image-null" v-else>
+          <p>请选择要上传的图片</p>
+          <img src="@/assets/images/imageUpload.jpg" alt="img" />
+        </div>
+        <input type="file" @change="handleFiles" style="opacity: 0" />
+      </label>
+      <div class="title-content" v-if="imgUrl">
+        <p>图片标题</p>
+        <input type="text" placeholder="请输入图片的标题" v-model="title" />
       </div>
+      <div class="type-content" v-if="title">
+        <van-field
+          v-model="fieldValue"
+          is-link
+          readonly
+          label="选择图片类型"
+          @click="showPicker = true"
+        />
+        <van-popup v-model:show="showPicker" round position="bottom">
+          <van-picker :columns="columns" @cancel="showPicker = false" @confirm="onConfirm" />
+        </van-popup>
+      </div>
+      <div class="image-descraption" v-if="fieldValue">
+        <p>请填写对图片的描述：</p>
+        <textarea class="picture-detail" style="resize: none" rows="6" v-model="description">
+        </textarea>
+      </div>
+      <button type="submit" class="c-button" @click="handleUploadImage" v-if="description">
+        发布
+      </button>
     </div>
-    <div class="image-descraption">
-      <p>请填写对图片的描述：</p>
-      <textarea
-        class="picture-detail"
-        style="resize: none"
-        rows="6"
-        placeholder=" 图片详细信息"
-        v-model="description"
-      >
-      </textarea>
-    </div>
-    <button type="submit" class="c-button" @click="handleUploadImage">提交</button>
   </div>
 </template>
 <script setup lang="ts">
@@ -62,6 +49,19 @@ const type = ref<any>('')
 const fileId = ref<any>('')
 const files = ref('')
 const imgUrl = ref('')
+
+const fieldValue = ref('')
+const showPicker = ref(false)
+const columns = [
+  { text: '公开的', value: 'public' },
+  { text: '私密的', value: 'private' }
+]
+const onConfirm = ({ selectedOptions }) => {
+  showPicker.value = false
+  fieldValue.value = selectedOptions[0].text
+  type.value = selectedOptions[0].value
+}
+
 const handleColse = () => {
   router.go(-1)
 }
@@ -79,7 +79,6 @@ const handleFiles = (event: any) => {
       alert(error.data.msg)
     })
 }
-const handleType = () => {}
 const handleUploadImage = () => {
   if (route.query.id) {
     doUpdata({
@@ -132,18 +131,52 @@ onBeforeMount(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #000000;
-  color: #fff;
   position: relative;
-  i {
-    position: fixed;
-    top: j(20);
-    left: j(20);
-    display: block;
-    width: j(15);
-    height: j(15);
-    background: url(@/assets/images/colse.svg) center center no-repeat;
-    background-size: auto;
+  background: url(@/assets/images/imagecreate.jpg);
+  background-size: auto;
+}
+.upload-image {
+  margin-top: j(30);
+  padding: j(10);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.image-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  img {
+    width: 100%;
+  }
+}
+.image-null {
+  width: 100%;
+  p {
+    font-size: j(14);
+    margin-bottom: j(20);
+  }
+}
+.title-content {
+  margin: j(20);
+  padding: j(10);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  p {
+    font-size: j(14);
+    margin-right: j(20);
+  }
+}
+.type-content {
+  white-space: nowrap;
+  margin: j(20);
+  .van-cell--clickable {
+    border-radius: j(12);
   }
 }
 

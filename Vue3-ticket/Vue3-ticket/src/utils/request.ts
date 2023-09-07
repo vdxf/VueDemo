@@ -27,15 +27,14 @@ ajax.interceptors.response.use(
   },
   (error) => {
     console.log('请求响应错误 => ', error.response, error)
-    alert(error.data)
+    alert(error.response.data.msg || (error.response.status && error.response.statusText))
     return Promise.reject(error)
   }
 )
 
 function requestToken(options) {
-  const token = window.localStorage.getItem('token')
+  const token = window.localStorage.getItem('token') || ''
   const Authorization = 'Bearer ' + token
-
   return ajax({
     ...options,
     headers: { Authorization: Authorization }

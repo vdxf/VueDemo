@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="follow-view">
     <van-search
       v-model="keyword"
       show-action
@@ -21,12 +21,18 @@
         error-text="请求失败，点击重新加载"
         @load="handleLoad"
       >
-        <van-cell v-for="item in list" :key="item.id">
-          <div class="image-detail">
-            <vs-image :src="item.file.filepath" alt="img" />
-            <div class="detail-content">
-              <span>标题：{{ item.title }}</span>
-              <span>详情：{{ item.description }}</span>
+        <van-cell v-for="item in userList" :key="item.id">
+          <div class="item">
+            <vs-image
+              :src="item.user.avatar.filepath"
+              wr="200"
+              alt="img"
+              v-if="item.user.avatar.filepath"
+            />
+            <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
+            <div class="item-info">
+              <span>{{ item.user.nickname }}</span>
+              <span>{{ item.user.signature }}</span>
             </div>
           </div>
         </van-cell>
@@ -45,8 +51,7 @@ const id = ref()
 
 const keyword = ref('')
 const keyword1 = ref('')
-const imageList = ref<any>([])
-const list = ref(toRaw(imageList))
+const userList = ref<any>()
 let current1 = 0
 const loading = ref(false)
 const finished = ref(false)
@@ -70,11 +75,11 @@ const handleFollowList = (current: number) => {
     userId: id.value
   })
     .then((result) => {
-      console.log(result)
       const { list, count } = result
-      imageList.value = current === 1 ? list : [...imageList.value, ...list]
-      finished.value = imageList.value.length >= count
+      userList.value = current === 1 ? list : [...userList.value, ...list]
+      finished.value = userList.value.length >= count
       current1 = current
+      console.log(userList.value)
     })
     .catch((error) => {
       console.log(error)
@@ -99,4 +104,29 @@ const handleSearch = () => {
 </script>
 <style scoped lang="scss">
 @import '@/assets/sass/define.scss';
+.content {
+  overflow-y: auto;
+  height: 100vh;
+}
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  img {
+    display: block;
+    width: j(40);
+    height: j(40);
+    border-radius: 50%;
+    margin-right: j(20);
+  }
+}
+.item-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  span:first-child {
+    font-size: j(18);
+    color: #000;
+  }
+}
 </style>

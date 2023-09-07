@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, toRaw } from 'vue'
-import { doTabulation } from '@/api/index'
+import { doTabulation, doUserDetails } from '@/api/index'
 import VsImage from '@/components/VsImage.vue'
 import { useRouter } from 'vue-router'
 
@@ -64,10 +64,20 @@ const error = ref(false)
 const refreshing = ref(false)
 const view = ref()
 const avatarUrl = ref()
+const userInfo = ref()
 onBeforeMount(() => {
-  const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
-  avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.avatar.filepath
+  const token = window.localStorage.getItem('token')
+  if (token) {
+    handleUserDetail()
+  }
 })
+//获取用户头像
+const handleUserDetail = () => {
+  userInfo.value = JSON.parse(window.localStorage.getItem('userInfo'))
+  if (userInfo.value.avatar) {
+    avatarUrl.value = 'https://img.daysnap.cn/' + userInfo.value.avatar.filepath
+  }
+}
 //跳转图片详情
 const handleImageDetail = (id: any) => {
   router.push({
@@ -91,7 +101,7 @@ const reqDataList = (current: number) => {
       current1 = current
     })
     .catch((error) => {
-      console.log(error)
+      console.log('111')
       error.value = true
     })
     .finally(() => {
@@ -129,12 +139,12 @@ const handleSearch = () => {
   flex-direction: row;
   align-items: center;
   padding-left: j(10);
-}
-.header-avatar {
-  display: block;
-  width: j(40);
-  height: j(40);
-  border-radius: 50%;
+  img {
+    display: block;
+    width: j(40);
+    height: j(40);
+    border-radius: 50%;
+  }
 }
 .search-form {
   flex: 1;

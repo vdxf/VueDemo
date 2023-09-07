@@ -35,15 +35,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import { doLogin, doUserDetails } from '@/api/index'
+import { doGetUserInformation, doLogin } from '@/api/index'
 import router from '@/router'
-import { doUserList } from '@/api'
-import { ref, toRaw } from 'vue'
+import { ref } from 'vue'
 
 const email = ref('2532499815@qq.com')
 const password = ref('123456789')
-const userInfo = ref()
-const userId = ref()
+//邮箱验证
+const isEmail = (val: string) => {
+  return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(val)
+}
 //返回
 const handleBack = () => {
   router.go(-1)
@@ -58,41 +59,27 @@ const handleRegister = () => {
 }
 // 登录
 const handleLogin = () => {
-  doLogin({ email: email.value, password: password.value })
-    .then((result) => {
-      window.localStorage.setItem('token', result.token)
-      router.replace('/home')
-      handleUserList()
-    })
-    .catch((error) => {
-      alert(error.data.msg)
-    })
-}
-//获取用户列表
-const handleUserList = () => {
-  doUserList({
-    current: 1,
-    length: 10
-  })
-    .then((result) => {
-      userInfo.value = result.list.find((item: any) => {
-        return item.email === email.value
-      })
-      console.log(userInfo.value)
-      userId.value = toRaw(userInfo.value).id
-      window.localStorage.setItem('userId', userId.value)
-      handleUserDetail()
-    })
-    .catch((error) => {
-      alert(error.data.msg)
-    })
-}
-// 获取用户详情
+  if (email.value && password.value) {
+    if (isEmail(email.value)) {
+      doLogin({ email: email.value, password: password.value })
+        .then((result) => {
+          window.localStorage.setItem('token', result.token)
+          handleUserDetail()
+        })
+        .catch((error) => {
+          alert(error.data.msg)
+        })
+    } else {
+      alert('邮箱格式错误')
+    }
+  }
+} // 获取用户详情
 const handleUserDetail = () => {
-  const id = window.localStorage.getItem('userId')
-  doUserDetails(id)
+  doGetUserInformation()
     .then((result) => {
       window.localStorage.setItem('userInfo', JSON.stringify(result))
+      window.localStorage.setItem('userId', result.id)
+      router.replace('/home')
     })
     .catch((error) => {
       console.log(error)

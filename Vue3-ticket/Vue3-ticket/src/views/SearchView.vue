@@ -12,7 +12,7 @@
       </template>
     </van-search>
 
-    <van-pull-refresh class="content" v-model="refreshing" @refresh="handleRefresh" ref="view">
+    <van-pull-refresh class="content" v-model="refreshing" @refresh="handleRefresh" v-if="isShow">
       <van-list
         v-model:loading="loading"
         :finished="finished"
@@ -32,6 +32,9 @@
         </van-cell>
       </van-list>
     </van-pull-refresh>
+    <div class="search-null" v-else>
+      <p>搜索历史</p>
+    </div>
   </div>
 </template>
 
@@ -48,7 +51,7 @@ const loading = ref(false)
 const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
-const view = ref()
+const isShow = ref(false)
 const id = ref()
 
 const reqDataList = (current: number) => {
@@ -75,7 +78,6 @@ const reqDataList = (current: number) => {
 }
 const handleRefresh = () => {
   reqDataList(1)
-  view.value.$el.scrollTop = 0
 }
 const handleLoad = () => {
   reqDataList(current1 + 1)
@@ -85,8 +87,13 @@ const handleSearch = () => {
   handleRefresh()
 }
 watch(keyword, (nv) => {
-  keyword1.value = nv
-  handleRefresh()
+  if (nv) {
+    keyword1.value = nv
+    isShow.value = true
+    handleSearch()
+  } else {
+    isShow.value = false
+  }
 })
 </script>
 
@@ -115,5 +122,8 @@ watch(keyword, (nv) => {
   display: flex;
   flex-direction: column;
   text-align: left;
+}
+.search-null {
+  margin: auto;
 }
 </style>

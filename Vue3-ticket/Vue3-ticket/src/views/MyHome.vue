@@ -1,25 +1,25 @@
 <template>
   <div class="myhome-view">
-    <van-pull-refresh class="content" v-model="refreshing" @refresh="handleRefresh" ref="view">
-      <van-list
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        v-model:error="error"
-        error-text="请求失败，点击重新加载"
-        @load="handleLoad"
-      >
-        <van-cell v-for="item in list" :key="item.id">
+    <van-list
+      v-model:loading="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      v-model:error="error"
+      error-text="请求失败，点击重新加载"
+      @load="handleLoad"
+    >
+      <div class="image-list">
+        <van-cell v-for="item in list" :key="item.id" class="image-item">
           <div class="image-detail">
             <vs-image :src="item.file.filepath" alt="img" />
-            <div class="detail-content" v-if="buttonShow">
+            <div class="detail-content" v-if="!authorId || authorId === id">
               <button @click.stop="handleUpdataImage(item)">更新</button>
               <button @click.stop="handleDeleteImage(item.id)">删除</button>
             </div>
           </div>
         </van-cell>
-      </van-list>
-    </van-pull-refresh>
+      </div>
+    </van-list>
   </div>
 </template>
 <script setup lang="ts">
@@ -37,21 +37,21 @@ const loading = ref(false)
 const finished = ref(false)
 const error = ref(false)
 const refreshing = ref(false)
-const buttonShow = ref()
+const authorId = ref()
 const id = ref()
 onBeforeMount(() => {
-  id.value = route.query.id
-  if (route.query.id) {
-    buttonShow.value = false
-  } else {
-    buttonShow.value = true
+  authorId.value = route.query.id
+  id.value = window.localStorage.getItem('userId')
+  if (authorId.value === id.value) {
+    authorId.value = id.value
   }
+  reqDataList(1)
 })
 const reqDataList = (current: number) => {
   doTabulation({
     current: current,
     length: 10,
-    userId: id.value
+    userId: authorId.value
   })
     .then((result) => {
       const { list, count } = result
@@ -67,9 +67,6 @@ const reqDataList = (current: number) => {
       loading.value = false
       refreshing.value = false
     })
-}
-const handleRefresh = () => {
-  reqDataList(1)
 }
 const handleLoad = () => {
   reqDataList(current1 + 1)
@@ -112,15 +109,16 @@ const handleDeleteImage = (id: any) => {
 </script>
 <style scoped lang="scss">
 @import '@/assets/sass/define.scss';
-.myhome-view {
+.image-list {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-.content {
-  flex: 1;
-  overflow-y: auto;
+.image-item {
+  width: 48%;
+  margin: j(3);
+  padding: 0;
+  border: 1px solid #000;
 }
 .image-detail {
   display: flex;

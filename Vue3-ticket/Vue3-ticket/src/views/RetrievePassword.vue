@@ -39,34 +39,48 @@ const resetPassword = ref()
 const captcha = ref('')
 let sendCode = ref(false)
 const time = ref(60 * 1000)
+//返回
 const handleBack = () => {
   router.go(-1)
 }
-const handleRetrievePassword = () => {}
+//邮箱验证
+const isEmail = (val: string) => {
+  return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(val)
+}
 //发送验证码
 const handleCode = () => {
-  sendCode.value = true
-  doEmailSend({ email: email.value, type: 'reset-password' })
-    .then((result) => {
-      console.log(result)
-    })
-    .catch((error) => {
-      console.dir(error)
-    })
+  if (isEmail(email.value)) {
+    sendCode.value = true
+    doEmailSend({ email: email.value, type: 'register' })
+      .then((result) => {
+        console.log(result)
+      })
+      .catch((error) => {
+        alert(error.data.msg)
+      })
+  } else {
+    alert('邮箱格式错误')
+  }
 }
 //重置密码
 const handleReset = () => {
-  doResetPassword({
-    email: email.value,
-    captcha: captcha.value,
-    resetPassword: resetPassword.value
-  })
-    .then((result) => {
-      console.log(result)
-    })
-    .catch((error) => {
-      console.dir(error)
-    })
+  if (email.value && resetPassword.value && captcha.value) {
+    if (isEmail(email.value)) {
+      doResetPassword({
+        email: email.value,
+        captcha: captcha.value,
+        resetPassword: resetPassword.value
+      })
+        .then((result) => {
+          console.log(result)
+        })
+        .catch((error) => {
+          console.dir(error)
+        })
+    } else {
+      alert('邮箱格式错误')
+    }
+  }
 }
 //倒计时
 const handleFinish = () => {

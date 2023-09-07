@@ -18,7 +18,7 @@
     </div>
     <div class="user-info" @click="handleHomepage">
       <div class="header-info">
-        <vs-image :src="authoravatar" alt="img" v-if="authoravatar" class="user-avatar" />
+        <vs-image :src="authoravatar" wr="50" alt="img" v-if="authoravatar" class="user-avatar" />
         <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
         <span>{{ authorNickname }}</span>
         <div class="trand-group" v-if="trandShow">

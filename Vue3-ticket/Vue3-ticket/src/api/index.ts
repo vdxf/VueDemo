@@ -47,13 +47,13 @@ export const doGain = withLoading((data: {}) => {
 })
 
 //获取图片列表
-export const doTabulation = withLoading((data: {}) => {
+export const doTabulation = (data: {}) => {
   return request({
     url: `/api/v1/picture`,
     method: 'GET',
     params: data
   })
-})
+}
 
 //图片更新
 export const doUpdata = withLoading((data) => {
@@ -79,21 +79,11 @@ export const doDetail = withLoading((id) => {
     method: 'GET'
   })
 })
-
-// 我的收藏
-export const doCollectList = withLoading((data) => {
-  return request({
-    url: `/api/v1/collect`,
-    method: 'GET',
-    params: data
-  })
-})
-//获取用户信息
-export const doGetUserInformation = (data) => {
+//通过token获取用户信息
+export const doGetUserInformation = () => {
   return request({
     url: `/api/v1/user/profile`,
-    method: 'GET',
-    data
+    method: 'GET'
   })
 }
 //更新用户信息
@@ -113,8 +103,7 @@ export const doUserList = withLoading((data) => {
     params: data
   })
 })
-
-//用户详情
+//通过id用户详情
 export const doUserDetails = (id) => {
   return request({
     url: `/api/v1/user/${id}`,
@@ -166,7 +155,14 @@ export const doCollect = (pictureId) => {
     data: pictureId
   })
 }
-
+// 收藏列表
+export const doCollectList = (data) => {
+  return request({
+    url: `/api/v1/collect`,
+    method: 'GET',
+    params: data
+  })
+}
 // 取消收藏
 export const doCancelCollect = (pictureId) => {
   return request({
@@ -196,7 +192,7 @@ export const doCancelTrand = (followUserId) => {
 //获取关注列表
 export const doFollowList = withLoading((data: {}) => {
   return request({
-    url: `/api/v1/relation/follower`,
+    url: `/api/v1/relation/following`,
     method: 'GET',
     params: data
   })
@@ -204,7 +200,7 @@ export const doFollowList = withLoading((data: {}) => {
 //获取粉丝列表
 export const doFansList = withLoading((data: {}) => {
   return request({
-    url: `/api/v1/relation/following`,
+    url: `/api/v1/relation/follower`,
     method: 'GET',
     params: data
   })
