@@ -24,15 +24,15 @@
         <van-cell v-for="item in userList" :key="item.id">
           <div class="item">
             <vs-image
-              :src="item.user.avatar.filepath"
+              :src="item.following.avatar.filepath"
               wr="200"
               alt="img"
-              v-if="item.user.avatar.filepath"
+              v-if="item.following.avatar"
             />
             <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
             <div class="item-info">
-              <span>{{ item.user.nickname }}</span>
-              <span>{{ item.user.signature }}</span>
+              <span>{{ item.following.nickname }}</span>
+              <span>{{ item.following.signature }}</span>
             </div>
           </div>
         </van-cell>
@@ -42,12 +42,11 @@
 </template>
 <script setup lang="ts">
 import { doFollowList } from '@/api'
-import { onBeforeMount, ref, toRaw } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const authorId = ref()
-const id = ref()
 
 const keyword = ref('')
 const keyword1 = ref('')
@@ -60,11 +59,6 @@ const refreshing = ref(false)
 const view = ref()
 onBeforeMount(() => {
   authorId.value = route.query.id
-  if (authorId.value) {
-    id.value = authorId.value
-  } else {
-    id.value = window.localStorage.getItem('userId')
-  }
 })
 //获取关注列表
 const handleFollowList = (current: number) => {
@@ -72,7 +66,7 @@ const handleFollowList = (current: number) => {
     current: current,
     length: 10,
     keyword: keyword1.value,
-    userId: id.value
+    userId: authorId.value
   })
     .then((result) => {
       const { list, count } = result

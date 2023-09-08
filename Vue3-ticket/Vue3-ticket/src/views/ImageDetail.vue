@@ -238,10 +238,8 @@ const handleHomepage = () => {
 }
 .view-content {
   width: 100vw;
-  height: j(200);
   img {
     width: 100%;
-    height: 100%;
   }
 }
 .user-info {

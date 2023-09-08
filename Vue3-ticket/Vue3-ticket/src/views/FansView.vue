@@ -10,10 +10,15 @@
     >
       <van-cell v-for="item in list" :key="item.id">
         <div class="image-detail">
-          <vs-image :src="item.file.filepath" alt="img" />
+          <vs-image
+            :src="item.follower.avatar.filepath"
+            wr="50"
+            alt="img"
+            v-if="item.follower.avatar"
+          />
+          <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
           <div class="detail-content">
-            <span>标题：{{ item.title }}</span>
-            <span>详情：{{ item.description }}</span>
+            <span>{{ item.follower.nickname }}</span>
           </div>
         </div>
       </van-cell>
@@ -27,7 +32,6 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const authorId = ref()
-const id = ref()
 
 const keyword1 = ref('')
 const imageList = ref<any>([])
@@ -40,19 +44,14 @@ const refreshing = ref(false)
 const view = ref()
 onBeforeMount(() => {
   authorId.value = route.query.id
-  if (authorId.value) {
-    id.value = authorId.value
-  } else {
-    id.value = window.localStorage.getItem('userId')
-  }
 })
 //获取粉丝列表
-const handleFollowList = (current: number) => {
+const handleFansList = (current: number) => {
   doFansList({
     current: current,
     length: 10,
     keyword: keyword1.value,
-    userId: id.value
+    userId: authorId.value
   })
     .then((result) => {
       console.log(result)
@@ -71,12 +70,27 @@ const handleFollowList = (current: number) => {
     })
 }
 const handleRefresh = () => {
-  handleFollowList(1)
+  handleFansList(1)
 }
 const handleLoad = () => {
-  handleFollowList(current1 + 1)
+  handleFansList(current1 + 1)
 }
 </script>
 <style scoped lang="scss">
 @import '@/assets/sass/define.scss';
+.image-detail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  img {
+    width: j(40);
+    height: j(40);
+    border-radius: 50%;
+    margin-right: j(20);
+  }
+}
+.detail-content {
+  flex: 1;
+  text-align: left;
+}
 </style>

@@ -3,9 +3,9 @@
     <van-pull-refresh v-model="loading" @refresh="onRefresh">
       <div class="header-content">
         <img src="@/assets/images/desktop_4.jpg" alt="img" />
-        <div class="back" @click="handleBack">&lt;</div>
-        <div class="search" @click="handleSearch"><i></i></div>
-        <van-cell @click="showShare = true" class="share" />
+        <i class="iconfont back" @click="handleBack">&#xe60c;</i>
+        <i class="iconfont search" @click="handleSearch">&#xe600;</i>
+        <van-cell @click="showShare = true"><i class="iconfont share">&#xe605;</i></van-cell>
         <van-share-sheet
           v-model:show="showShare"
           title="立即分享给好友"
@@ -20,13 +20,19 @@
           <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
           <div class="info-header-content">
             <div class="info-header-item">
-              <router-link to="/followfans/fans">
+              <router-link
+                replace
+                :to="{ path: '/followfans/fans', query: { id: authorId || id } }"
+              >
                 <div class="fans">
                   <span>{{ fans }}</span>
                   <p>粉丝</p>
                 </div>
               </router-link>
-              <router-link to="/followfans/follow">
+              <router-link
+                replace
+                :to="{ path: '/followfans/follow', query: { id: authorId || id } }"
+              >
                 <div class="follow">
                   <span>{{ follow }}</span>
                   <p>关注</p>
@@ -56,19 +62,18 @@
       </div>
       <div class="list">
         <van-tabs v-model:active="activeName" class="title-group" routes>
+          <van-tab title="主页" name="/homepage/myhome" replace to="/homepage/myhome"></van-tab>
           <van-tab
-            title="主页"
-            name="/homepage/myhome"
+            title="动态"
+            name="/homepage/mytrand"
             replace
             :to="{
-              path: '/homepage/myhome',
+              path: '/homepage/mytrand',
               query: {
                 id: id
               }
             }"
-          >
-          </van-tab>
-          <van-tab title="动态" name="/homepage/mytrand" replace to="/homepage/mytrand"></van-tab>
+          ></van-tab>
           <van-tab
             title="收藏"
             name="/homepage/mycollect"
@@ -238,19 +243,10 @@ const handleTrand = () => {
 }
 .search {
   right: j(50);
-  i {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: url(@/assets/images/search.svg) center center no-repeat;
-    background-size: j(25) j(25);
-  }
 }
 .share {
   right: j(10);
-  background: url(@/assets/images/more.svg) center center no-repeat;
-  background-color: #000;
-  background-size: j(25) j(25);
+  font-size: j(30);
 }
 .homepage-content {
   background-color: #fff;

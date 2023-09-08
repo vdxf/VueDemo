@@ -9,8 +9,8 @@
       <div class="user-avatar" v-else>
         <vs-image :src="avatarUrl" wr="50" alt="img" v-if="avatarUrl" class="avatar-info" />
         <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
-        <span>{{ nickname }}</span>
-        <i>空间</i>
+        <span>{{ nickname }} <i class="iconfont">&#xe6e2;</i> </span>
+        <p>空间<i class="iconfont">&#xe606;</i></p>
       </div>
       <div class="user-info" @click.stop="handleTrand">
         <div class="user-trend">
@@ -50,43 +50,43 @@
         <p>推荐服务</p>
         <div class="recommen-group">
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe60b;</i>
             <span @click="$emit('null')">我的课程</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe6bd;</i>
             <span @click="$emit('null')">免流量服务</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe653;</i>
             <span @click="$emit('null')">个性装扮</span>
           </div>
           <div class="recommen-item">
-            <i></i>
-            <span @click="$emit('null')">邀好友转红包</span>
+            <i class="iconfont">&#xe72f;</i>
+            <span @click="$emit('null')">邀好友赚红包</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe63f;</i>
             <span @click="$emit('null')">我的钱包</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe60b;</i>
             <span @click="$emit('null')">我的课程</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe6bd;</i>
             <span @click="$emit('null')">免流量服务</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe653;</i>
             <span @click="$emit('null')">个性装扮</span>
           </div>
           <div class="recommen-item">
-            <i></i>
-            <span @click="$emit('null')">邀好友转红包</span>
+            <i class="iconfont">&#xe72f;</i>
+            <span @click="$emit('null')">邀好友赚红包</span>
           </div>
           <div class="recommen-item">
-            <i></i>
+            <i class="iconfont">&#xe63f;</i>
             <span @click="$emit('null')">我的钱包</span>
           </div>
         </div>
@@ -94,18 +94,22 @@
       <div class="more-srevice">
         <p>更多服务</p>
         <div class="set-up">
+          <i class="iconfont">&#xe603;</i>
           <span @click="$emit('null')">联系客服</span>
           <i>></i>
         </div>
         <div class="set-up">
+          <i class="iconfont">&#xe602;</i>
           <span @click="$emit('null')">听视频</span>
           <i>></i>
         </div>
         <div class="set-up">
+          <i class="iconfont">&#xe60a;</i>
           <span @click="$emit('null')">青少年守护</span>
           <i>></i>
         </div>
         <div class="set-up">
+          <i class="iconfont">&#x10101;</i>
           <span @click="handleSetup">设置</span>
           <i>></i>
         </div>
@@ -126,6 +130,7 @@ const isToken = ref<any>('')
 const userDetail = ref()
 const avatarUrl = ref('')
 const nickname = ref('')
+const id = ref('')
 onBeforeMount(() => {
   isToken.value = window.localStorage.getItem('token')
   if (isToken.value) {
@@ -143,6 +148,7 @@ const handleUserDetail = () => {
   trend.value = userDetail.value.pictureCount
   follow.value = userDetail.value.followingCount
   fans.value = userDetail.value.followerCount
+  id.value = userDetail.value.id
   if (userDetail.value.avatar) {
     avatarUrl.value = 'https://img.daysnap.cn/' + userDetail.value.avatar.filepath
   }
@@ -157,7 +163,12 @@ const handleTrand = () => {
 }
 //关注
 const handleFollow = () => {
-  router.push('/followfans/follow')
+  router.push({
+    path: '/followfans/follow',
+    query: {
+      id: id.value
+    }
+  })
 }
 //粉丝
 const handleFans = () => {
@@ -204,27 +215,22 @@ const handleCollect = () => {
   }
 }
 .user-avatar {
-  i {
-    font-size: j(12);
-  }
-  i::after {
-    content: '>';
-    font-size: j(16);
-    margin-left: j(10);
-  }
   span {
     display: flex;
     flex-direction: row;
     align-items: center;
+    i {
+      font-size: j(20);
+      margin-left: j(10);
+    }
   }
-  span::after {
-    content: '';
-    margin-left: j(10);
-    display: block;
-    width: j(15);
-    height: j(15);
-    background: url(@/assets/images/myedit.svg) center center no-repeat;
-    background-size: j(20) j(20);
+  p {
+    font-size: j(14);
+    color: #ccc;
+    i {
+      font-size: j(14);
+      margin-left: j(10);
+    }
   }
 }
 .user-info {
@@ -328,8 +334,8 @@ const handleCollect = () => {
     display: block;
     width: j(30);
     height: j(30);
-    background: url(@/assets/images/recommen.svg) center center no-repeat;
-    background-size: auto auto;
+    color: #e89abe;
+    font-size: j(20);
     margin-bottom: j(4);
   }
 }
@@ -339,6 +345,11 @@ const handleCollect = () => {
   align-items: center;
   margin: j(10) 0;
   margin-left: j(10);
+  .iconfont {
+    color: #e89abe;
+    font-size: j(20);
+    margin-right: j(10);
+  }
   span {
     display: flex;
     flex-direction: row;
@@ -346,15 +357,6 @@ const handleCollect = () => {
     height: j(20);
     line-height: j(20);
     flex: 1;
-  }
-  span::before {
-    content: '';
-    display: block;
-    width: j(20);
-    height: j(20);
-    background: url(@/assets/images/install.svg) center center no-repeat;
-    background-size: j(20) j(20);
-    margin-right: j(10);
   }
   i {
     font-size: j(20);

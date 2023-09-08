@@ -6,8 +6,11 @@
       <label>
         <van-cell title="头像" is-link>
           <template #right-icon>
-            <vs-image :src="avatarUrl" wr="50" class="avatar-info" v-if="avatarUrl" />
-            <img src="@/assets/images/imageUpload.jpg" alt="img" v-else class="avatar-info" />
+            <div class="avator-content">
+              <vs-image :src="avatarUrl" wr="50" class="avatar-info" v-if="avatarUrl" />
+              <img src="@/assets/images/imageUpload.jpg" alt="img" v-else class="avatar-info" />
+              <i>></i>
+            </div>
           </template>
         </van-cell>
         <input type="file" @change="handleFiles" />
@@ -147,6 +150,9 @@ onBeforeMount(() => {
 }
 .edit-content {
   margin-top: j(20);
+  &:nth-child {
+    padding: j(20) 0;
+  }
   input {
     display: none;
   }
@@ -157,7 +163,27 @@ onBeforeMount(() => {
   height: j(50);
   border-radius: 50%;
 }
-.sex-choose {
-  text-align: center;
+.van-radio-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: j(20);
+}
+.van-field {
+  padding: j(20);
+}
+.van-cell {
+  padding: j(20);
+}
+.avator-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  i {
+    font-size: j(20);
+    color: #ccc;
+    margin-left: j(10);
+  }
 }
 </style>
