@@ -142,7 +142,7 @@ const reqDataList = (current: number) => {
           } else {
             rightList.value.push(item)
           }
-        }, 500)
+        }, 0)
       })
     })
     .catch((error) => {
@@ -201,7 +201,7 @@ const handleSearch = () => {
 }
 .image-content {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: j(10);
   li {
     flex: 1;
