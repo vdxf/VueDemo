@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 const ajax = axios.create({
   timeout: 10000,
   baseURL: ''
@@ -32,13 +32,13 @@ ajax.interceptors.response.use(
   }
 )
 
-function requestToken(options) {
+function requestToken<T = any>(options: AxiosRequestConfig): Promise<T> {
   const token = window.localStorage.getItem('token') || ''
   const Authorization = 'Bearer ' + token
-  return ajax({
+  return ajax<T>({
     ...options,
     headers: { Authorization: Authorization }
-  })
+  }) as any
 }
 
 export default requestToken

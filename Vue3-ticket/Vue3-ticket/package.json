@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@daysnap/utils": "^0.0.64",
     "axios": "^1.4.0",
     "pinia": "^2.1.4",
     "vant": "^4.6.4",

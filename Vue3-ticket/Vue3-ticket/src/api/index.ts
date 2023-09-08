@@ -20,8 +20,8 @@ export const doRegister = withLoading((data: {}) => {
 })
 
 // 登录
-export const doLogin = withLoading((data: {}) => {
-  return request({
+export const doLogin = withLoading((data: { account: string; password: string }) => {
+  return request<{ token: string }>({
     url: '/api/v1/auth/signin',
     method: 'POST',
     data
@@ -56,7 +56,7 @@ export const doTabulation = (data: {}) => {
 }
 
 //图片更新
-export const doUpdata = withLoading((data) => {
+export const doUpdata = withLoading((data: { id: string }) => {
   return request({
     url: `/api/v1/picture/${data.id}`,
     method: 'PATCH',

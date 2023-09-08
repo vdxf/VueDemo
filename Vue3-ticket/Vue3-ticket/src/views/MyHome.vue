@@ -91,7 +91,6 @@ const handleDeleteImage = (id: any) => {
   showConfirmDialog({
     title: '温馨提示',
     message: '确认要删除吗',
-    width: '50vw'
   })
     .then(() => {
       doDelete(id)

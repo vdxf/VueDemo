@@ -26,21 +26,52 @@
         error-text="请求失败，点击重新加载"
         @load="handleLoad"
       >
-        <div class="image-list">
-          <van-cell
-            v-for="item in list"
-            :key="item.id"
-            @click="handleImageDetail(item.id)"
-            class="image-item"
-          >
-            <vs-image :src="item.file.filepath" wr="200" alt="img" v-if="item.file.filepath" />
-            <img src="@/assets/images/imageUpload.jpg" alt="img" v-else />
-            <div class="detail-content">
-              <span>{{ item.description }}</span>
-              <span><i></i>{{ item.user.nickname }}</span>
-            </div>
-          </van-cell>
-        </div>
+        <ul class="image-content">
+          <li id="left">
+            <van-cell
+              v-for="item in leftList"
+              :key="item.id"
+              @click="handleImageDetail(item.id)"
+              class="image-item"
+            >
+              <div
+                class="image-box"
+                :style="{
+                  paddingTop: (item.file.height / item.file.width) * 100 + `%`,
+                  backgroundColor: item.file.color
+                }"
+              >
+                <vs-image :src="item.file.filepath" wr="200" alt="img" />
+              </div>
+              <div class="detail-content">
+                <span>{{ item.description }}</span>
+                <span><i></i>{{ item.user.nickname }}</span>
+              </div>
+            </van-cell>
+          </li>
+          <li id="right">
+            <van-cell
+              v-for="item in rightList"
+              :key="item.id"
+              @click="handleImageDetail(item.id)"
+              class="image-item"
+            >
+              <div
+                class="image-box"
+                :style="{
+                  paddingTop: (item.file.height / item.file.width) * 100 + `%`,
+                  backgroundColor: item.file.color
+                }"
+              >
+                <vs-image :src="item.file.filepath" wr="200" alt="img" />
+              </div>
+              <div class="detail-content">
+                <span>{{ item.description }}</span>
+                <span><i></i>{{ item.user.nickname }}</span>
+              </div>
+            </van-cell>
+          </li>
+        </ul>
       </van-list>
     </van-pull-refresh>
   </div>
@@ -55,8 +86,9 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const keyword = ref('')
 const keyword1 = ref('')
-const imageList = ref<any>([])
-const list = ref(toRaw(imageList))
+const imageList = ref<any>()
+const leftList = ref<any>([])
+const rightList = ref<any>([])
 let current1 = 0
 const loading = ref(false)
 const finished = ref(false)
@@ -65,6 +97,8 @@ const refreshing = ref(false)
 const view = ref()
 const avatarUrl = ref()
 const userInfo = ref()
+const leftHeight = ref<any>()
+const rightHeight = ref<any>()
 onBeforeMount(() => {
   const token = window.localStorage.getItem('token')
   if (token) {
@@ -99,6 +133,17 @@ const reqDataList = (current: number) => {
       imageList.value = current === 1 ? list : [...imageList.value, ...list]
       finished.value = imageList.value.length >= count
       current1 = current
+      list.forEach((item: object) => {
+        setTimeout(() => {
+          leftHeight.value = document.getElementById('left')?.clientHeight
+          rightHeight.value = document.getElementById('right')?.clientHeight
+          if (leftHeight.value <= rightHeight.value) {
+            leftList.value.push(item)
+          } else {
+            rightList.value.push(item)
+          }
+        }, 500)
+      })
     })
     .catch((error) => {
       console.log('111')
@@ -132,7 +177,7 @@ const handleSearch = () => {
   height: 100vh;
   overflow: hidden;
   padding-top: j(10);
-  padding-bottom: j(50);
+  padding-bottom: j(40);
 }
 .home-header {
   display: flex;
@@ -150,51 +195,45 @@ const handleSearch = () => {
   flex: 1;
 }
 .content {
-  margin-top: j(10);
   flex: 1;
   overflow-y: auto;
   background-color: #f1f1f1;
 }
-.image-list {
+.image-content {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding-bottom: j(40);
-  position: relative;
-}
-.van-list_finished-text {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-.image-item {
-  width: 48%;
-  margin: j(3);
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  img {
-    display: block;
-    width: 100%;
-    height: j(100);
+  align-items: center;
+  padding: j(10);
+  li {
+    flex: 1;
+    margin-right: j(10);
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
+.image-box {
+  width: 100%;
+  position: relative;
+  img {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+.image-item {
+  padding: 0;
+  margin-bottom: j(10);
+}
 .detail-content {
-  height: j(70);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   text-align: left;
-  margin: j(4);
+  margin: 0 j(4);
   span {
     font-size: j(16);
     color: #000;
-    &:first-child {
-      white-space: pre-line;
-      height: j(50);
-      overflow: hidden;
-    }
     &:last-child {
       display: flex;
       flex-direction: row;
